@@ -1,4 +1,5 @@
 
+
 ish_drupal_module.aphorisms_index:
   path: "/aphorisms"
   defaults:
@@ -20,6 +21,25 @@ ish_drupal_module.aphorisms_new:
     _permission: 'access content'
   options:
     parameters:
+
+ish_drupal_module.bjjc_create_categories:
+  path: '/bjjc/create-categories'
+  defaults:
+    _controller: '\Drupal\ish_drupal_module\Controller\BjjcController::createCategories'
+  requirements:
+    _role: 'administrator'
+  options:
+    parameters:
+
+ish_drupal_module.bjjc_create_videos:
+  path: '/bjjc/create-videos'
+  defaults:
+    _controller: '\Drupal\ish_drupal_module\Controller\BjjcController::createVideos'
+  requirements:
+    _role: 'administrator'
+  options:
+    parameters:
+
 
 ish_drupal_module.locations_show:
   path: "/locations/{slug}"
