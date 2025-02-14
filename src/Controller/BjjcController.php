@@ -126,7 +126,8 @@ class BjjcController extends ControllerBase {
     $count = 0;
     $videos_handle = fopen($_SERVER['DOCUMENT_ROOT'] . "/modules/ish_drupal_module/data/tbx_video.csv", "r");
     while (($data = fgetcsv($videos_handle)) !== FALSE) {
-      if ($count == 0) {
+      $count++;
+      if ($count < 10000) {
         ; // nothing
         // dump($data);
       } else {
@@ -140,7 +141,7 @@ class BjjcController extends ControllerBase {
         ];
         $hash[$obj['video_id']] = $obj;
       }
-      $count++;
+
     }
     // logg($hash, 'ze hash');
 
@@ -182,7 +183,7 @@ class BjjcController extends ControllerBase {
         $new_item = $manager->create([
           'field_oid' => $item['video_id'],
           'field_youtube_id' => $item['youtube_id'],
-          'title' => $item['name'],
+          'title' => $item['name'] || 'NO NAME',
           'type' => 'video',
         ]);
         if ($category) {
