@@ -6,28 +6,59 @@ use Drupal\node\NodeInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\Request;
 
+// function logg($object, $label=null) {
+//   print($label . ":");
+//   echo "<br />";
+//   dump($object);
+// }
+
+
 /**
  * Locations controller.
 **/
 class LocationsController extends ControllerBase {
 
   /**
+   * follow()
+   *
+  **/
+  public function follow($id, Request $request) {
+    $cuId = \Drupal::currentUser()->id();
+
+    $location = \Drupal::entityTypeManager()->getStorage('node')->load($id);
+    $location->field_users[] = [ 'target_id' => $cuId ];
+    $location->save();
+
+    return [
+      '#markup' => "<h1>Locations#follow()</h1>",
+    ];
+  }
+
+  /**
    * index()
   **/
   public function index() {
+    $cuId = \Drupal::currentUser()->id();
+
+    $my_locations = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties([
+      'type' => 'location',
+      'field_users' => $cuId,
+    ]);
+    logg($my_locations, 'my_locations');
+
     return [
-      '#markup' => "<h1>Locations Index !!!</h1>",
+      '#theme' => 'ish_locations_index',
     ];
   }
 
   /**
    * show()
   **/
-  public function show( $location_slug, Request $request ) {
+  public function show( $slug, Request $request ) {
 
     $location = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties([
       'type' => 'location',
-      'field_slug' => $location_slug,
+      'field_slug' => $slug,
     ]);
     $location = $location[ array_keys($location)[0] ];
 

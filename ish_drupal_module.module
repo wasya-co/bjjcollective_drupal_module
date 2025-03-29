@@ -81,6 +81,15 @@ function ish_drupal_module_theme($existing, $type, $theme, $path) {
       ],
     ],
 
+    'my_feed' => [
+      'path' => $path . '/templates',
+      'render element' => 'elements', // works?!
+      'template' => 'my_feed',
+      'variables' => [
+        'test_var_1' => null,
+      ],
+    ],
+
     'tags_show' => [
       'render element' => 'children',
       'template' => 'show',
