@@ -108,41 +108,58 @@ function ish_drupal_module_entity_form_display_alter(Drupal\Core\Entity\Entity\E
   }
 }
 
-
+/**
+ * another example
+**/
 // function ish_drupal_module_entity_type_build(array &$entity_types) {
 //   $entity_types['aphorism']->setFormClass('contribute', 'Drupal\aphorism\ContributeForm');
 // }
 
-/* 2024-08-21 :: Doesn't work: redirects, but does not log in! */
-/* function ish_drupal_module_user_login(\Drupal\user\UserInterface $account) {
-  $response = new RedirectResponse('/user/dashboard');
-  $response->send();
-  return;
-} */
 
 
-function ish_drupal_module_form_alter(&$form, $form_state, $form_id) {
+/**
+ * another example
+**/
+// function ish_drupal_module_form_alter(&$form, $form_state, $form_id) {
+//   $user = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
+//   $current_roles = \Drupal::currentUser()->getRoles();
+//   // var_dump('current_roles', $current_roles);
+//   switch($form_id) {
+//     case 'node_contributed_post_edit_form':
+//       if (!in_array('administrator', $current_roles)) {
+//         $form['field_issue']['#access'] = false;
+//         $form['revision_information']['#access'] = false;
+//       }
+//       break;
+//     case 'user_login_form':
+//      $form['#submit'][] = 'ish_drupal_module_submit_handler';
+//      break;
+//   }
+// }
+// function ish_drupal_module_submit_handler($form, $form_state) {
+//    $url = Url::fromRoute('/user/dashboard');
+//    $form_state->setRedirectUrl($url);
+// }
 
-  $user = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
-  $current_roles = \Drupal::currentUser()->getRoles();
-  // var_dump('current_roles', $current_roles);
 
-  switch($form_id) {
-    case 'node_contributed_post_edit_form':
-      if (!in_array('administrator', $current_roles)) {
-        $form['field_issue']['#access'] = false;
-        $form['revision_information']['#access'] = false;
-      }
-      break;
-
-    case 'user_login_form':
-     $form['#submit'][] = 'ish_drupal_module_submit_handler';
-     break;
-  }
-}
-
-function ish_drupal_module_submit_handler($form, $form_state) {
-  //  $url = Url::fromRoute('/user/dashboard');
-  //  $form_state->setRedirectUrl($url);
-} // */
-
+/**
+ * From: https://www.drupalatyourfingertips.com/hooks
+ * Implements hook_form_FORM_ID_alter().
+**/
+// function ish_drupal_module_form_user_login_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+//   // Add a custom submit button to the login form.
+//   $form['third_party_login'] = [
+//     '#type' => 'submit',
+//     '#value' => t('Login with Third-Party Provider'),
+//     '#submit' => ['ish_drupal_module_user_login_form_submit'], // Call the custom submit function.
+//   ];
+// }
+// function ish_drupal_module_user_login_form_submit(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+//   // Get the username and password from the form state.
+//   $username = $form_state->getValue('name');
+//   $password = $form_state->getValue('pass');
+//   // Build the URL for the third-party login page, including the username and password as query parameters.
+//   $login_url = 'https://thirdpartyprovider.com/login?username=' . urlencode($username) . '&password=' . urlencode($password);
+//   // Redirect the user to the third-party login page.
+//   $form_state->setRedirect($login_url);
+// }
