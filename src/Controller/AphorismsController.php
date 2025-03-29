@@ -6,6 +6,18 @@ use Drupal\node\NodeInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\Request;
 
+function logg($object, $label=null) {
+  print($label . ":");
+  echo "<br />";
+  dump($object);
+}
+
+function puts($object, $label=null) {
+  print($label . ":");
+  echo "<br />";
+  dump($object);
+}
+
 /**
  * Aphorisms controller.
 **/

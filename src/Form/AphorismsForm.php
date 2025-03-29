@@ -11,6 +11,19 @@ use \Drupal\node\Entity\User;
 
 use Drupal\jwt\Transcoder\JwtTranscoder;
 
+
+function logg($object, $label=null) {
+  print($label . ":");
+  echo "<br />";
+  dump($object);
+}
+
+// function puts($object, $label=null) {
+//   print($label . ":");
+//   echo "<br />";
+//   dump($object);
+// }
+
 /**
  * Implements an example form.
 **/
@@ -27,10 +40,27 @@ class AphorismsForm extends FormBase {
    * {@inheritdoc}
   **/
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form = \Drupal::entityTypeManager()
-      ->getFormObject('aphorism', 'contribute');
+    // $form_1 = \Drupal::entityTypeManager()
+    //   ->getFormObject('aphorism', 'contribute');
+    // return \Drupal::formBuilder()->getForm($form_1);
 
-    return \Drupal::formBuilder()->getForm($form);
+    $form['title'] = [
+      '#type' => 'textfield',
+      '#title' => t('Title'),
+      '#required' => true,
+    ];
+    $form['body'] = [
+      '#type' => 'textarea',
+      '#title' => t('Body'),
+      '#required' => true,
+    ];
+    $form['actions']['#type'] = 'actions';
+    $form['actions']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => $this->t('Submit'),
+      '#button_type' => 'primary',
+    );
+    return $form;
   }
 
   /**
@@ -47,13 +77,28 @@ class AphorismsForm extends FormBase {
   **/
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $user = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
+    $params = $form_state->getValues();
+    $node_manager  = \Drupal::entityTypeManager()->getStorage('node');
+    $taxonomy = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+    $type = 'aphorism';
 
-    $thumb = $form_state->getValue('image_thumb');
-    if (!empty($thumb[0])) {
-        $file = File::load($thumb[0]);
-        $file->setPermanent();
-        $file->save;
-    }
+    // logg($params, 'the form values');
+    // exit(0);
+
+    $new_item = $node_manager->create([
+      'title' => $params['title'],
+      'body' => $params['body'],
+      'type' => $type,
+      'author' => $user,
+    ]);
+    $new_item->save();
+
+    // $thumb = $form_state->getValue('image_thumb');
+    // if (!empty($thumb[0])) {
+    //     $file = File::load($thumb[0]);
+    //     $file->setPermanent();
+    //     $file->save;
+    // }
 
     // var_dump( $file->id() );
     // exit(0);
@@ -65,12 +110,12 @@ class AphorismsForm extends FormBase {
     // ]);
     // $file->save();
 
-    $user->fieldImageThumb[] = [
-      'target_id' => $file->id(),
-      'alt' => 'tmp-alt',
-      'title' => 'tmp-title',
-    ];
-    $user->save();
+    // $user->fieldImageThumb[] = [
+    //   'target_id' => $file->id(),
+    //   'alt' => 'tmp-alt',
+    //   'title' => 'tmp-title',
+    // ];
+    // $user->save();
   }
 
 }
