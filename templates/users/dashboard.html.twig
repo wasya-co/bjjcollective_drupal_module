@@ -1,6 +1,6 @@
 
 <div class='UserDashboard maxwidth'>
-  <h1 class='center text-center'>Dashboard</h1>
+  <h1 class='center text-center'>Dashboard ({{ user.account.name }})</h1>
 
   <ul>
     <li><a href='/user/dashboard2'>/user/dashboard2</a></li>
@@ -9,5 +9,13 @@
 {# {{ drupal_form('Drupal\\search\\Form\\SearchBlockForm') }} #}
 
 {# {{ drupal_form('Drupal\\user\\Form\\UserLoginForm') }} #}
+
+  <div class='container row'>
+    <div class='col-md-6'>
+      <h5>My Articles <a href='/node/add/contributed_post'>[add]</a></h5>
+      {{ drupal_view('my_articles', 'block_1') }}
+    </div>
+    <div class='col-md-6'>Something else</div>
+  </div>
 
 </div>
