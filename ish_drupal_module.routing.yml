@@ -22,48 +22,42 @@ ish_drupal_module.aphorisms_new:
   options:
     parameters:
 
-# ish_drupal_module.bjjc_create_categories:
-#   path: '/bjjc/create-categories'
-#   defaults:
-#     _controller: '\Drupal\ish_drupal_module\Controller\BjjcController::createCategories'
-#   requirements:
-#     _role: 'administrator'
-#   options:
-#     parameters:
 
-# ish_drupal_module.bjjc_create_videos:
-#   path: '/bjjc/create-videos'
-#   defaults:
-#     _controller: '\Drupal\ish_drupal_module\Controller\BjjcController::createVideos'
-#   requirements:
-#     _role: 'administrator'
-#   options:
-#     parameters:
+ish_drupal_module.locations_follow:
+  path: "/locations/{id}/follow"
+  defaults:
+    _controller: '\Drupal\ish_drupal_module\Controller\LocationsController::follow'
+  requirements:
+    _permission: 'access content'
+  methods: 'POST'
+  options:
+    parameters:
+      id:
 
-# ish_drupal_module.bjjc_delete_videos:
-#   path: '/bjjc/delete-videos'
-#   defaults:
-#     _controller: '\Drupal\ish_drupal_module\Controller\BjjcController::deleteVideos'
-#   requirements:
-#     _role: 'administrator'
-#   options:
-#     parameters:
+ish_drupal_module.locations_index:
+  path: '/locations2'
+  defaults:
+    _controller: '\Drupal\ish_drupal_module\Controller\LocationsController::index'
+  requirements:
+    _permission: 'access content'
 
 ish_drupal_module.locations_show:
   path: "/locations/{slug}"
   defaults:
     _controller: '\Drupal\ish_drupal_module\Controller\LocationsController::show'
-    custom_arg: 2013
+    # custom_arg: 2013
   requirements:
     _permission: 'access content'
   options:
     parameters:
-      location_slug:
+      slug:
 
-ish_drupal_module.locations_index:
-  path: '/locations'
+
+
+ish_drupal_module.my_feed:
+  path: '/my/feed'
   defaults:
-    _controller: '\Drupal\ish_drupal_module\Controller\LocationsController::index'
+    _controller: '\Drupal\ish_drupal_module\Controller\FeedController::myFeed'
   requirements:
     _permission: 'access content'
 
