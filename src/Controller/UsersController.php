@@ -24,15 +24,14 @@ class UsersController extends ControllerBase {
    * dashboard()
   **/
   public function dashboard( Request $request ) {
-
     $user = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
-
     return [
       '#theme'   => 'ish_users_dashboard',
       '#user'    => $user,
       '#request' => $request,
     ];
   }
+
 
   /**
    * edit() - myself only
