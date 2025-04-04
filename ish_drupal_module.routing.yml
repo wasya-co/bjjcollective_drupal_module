@@ -55,9 +55,9 @@ ish_drupal_module.locations_show:
 
 
 ish_drupal_module.my_feed:
-  path: '/my/feed'
+  path: '/locations/my-feed'
   defaults:
-    _controller: '\Drupal\ish_drupal_module\Controller\FeedController::myFeed'
+    _controller: '\Drupal\ish_drupal_module\Controller\LocationsController::myFeed'
   requirements:
     _permission: 'access content'
 
