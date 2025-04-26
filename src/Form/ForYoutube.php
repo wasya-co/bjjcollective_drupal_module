@@ -74,7 +74,9 @@ class ForYoutube extends FormBase {
     $doc = new DOMDocument();
     $doc->loadHTMLFile("https://www.youtube.com/watch?v=" . $id);
     $doc->preserveWhiteSpace = false;
-    return $title = $doc->getElementsByTagName('title')[0]->nodeValue;
+    $title = $doc->getElementsByTagName('title')[0]->nodeValue;
+    \Drupal::logger('ish_drupal_module_form_alter')->notice('youtube title: ' . $title);
+    return $title;
   }
 
   /**
@@ -115,7 +117,6 @@ class ForYoutube extends FormBase {
       'title' => $youtube_title,
       'type' => $type,
     ]);
-    $new_item->field_tags[] = $these_tags;
     foreach (array_filter(array_values($params['tags'])) as $val) {
       $new_item->field_tags[] = [ 'target_id' => $val ];
     }
