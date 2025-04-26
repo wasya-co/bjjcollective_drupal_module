@@ -41,7 +41,7 @@ class ForYoutube extends FormBase {
     //   ->getFormObject('aphorism', 'contribute');
     // return \Drupal::formBuilder()->getForm($form_1);
 
-    $vocabulary_id = 'tags';
+    $vocabulary_id = 'tagscontrib';
     $taxonomy = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree($vocabulary_id);
     $options = [];
     foreach ($taxonomy as $tag) {
@@ -56,7 +56,7 @@ class ForYoutube extends FormBase {
     ];
     $form['tags'] = [
       '#type' => 'checkboxes',
-      '#title' => t('Tags2'),
+      '#title' => t('TagContribs'),
       '#options' => $options,
       '#required' => false,
     ];
@@ -66,20 +66,6 @@ class ForYoutube extends FormBase {
       '#value' => $this->t('Submit'),
       '#button_type' => 'primary',
     );
-
-    /* add autocomplete tags */
-    // $vid1 = 'media_tags';
-    // $form['tags'] = [
-    //   '#type' => 'entity_autocomplete',
-    //   '#title' => $this->t('Tags'),
-    //   '#target_type' => 'taxonomy_term',
-    //   '#selection_settings' => [
-    //     'target_bundles' => [$vid1],  //could be [$vid1, $vid2..].
-    //   ],
-    // //      '#tags' => TRUE,
-    // ];
-
-
 
     return $form;
   }
@@ -117,7 +103,7 @@ class ForYoutube extends FormBase {
     AOL;
 
 
-    $type = 'advanced_page';
+    $type = 'page_youtube';
     $new_item = $node_manager->create([
       'author' => $user,
       'body' => [
