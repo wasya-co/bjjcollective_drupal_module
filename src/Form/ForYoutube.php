@@ -56,7 +56,7 @@ class ForYoutube extends FormBase {
     ];
     $form['tags'] = [
       '#type' => 'checkboxes',
-      '#title' => t('TagContribs'),
+      '#title' => t('Tags'),
       '#options' => $options,
       '#required' => false,
     ];
@@ -110,6 +110,7 @@ class ForYoutube extends FormBase {
         'value' => $body,
         'format' => 'full_html',
       ],
+      'field_youtube_id' => $youtube_id,
       'status' => 1,
       'title' => $youtube_title,
       'type' => $type,

@@ -88,7 +88,7 @@ ish_drupal_module.users_dashboard:
   defaults:
     _controller: '\Drupal\ish_drupal_module\Controller\UsersController::dashboard'
   requirements:
-    _role: 'content_editor'
+    _role: 'content_contributor'
 
 ish_drupal_module.users_my_edit:
   path: '/user/my-edit'
