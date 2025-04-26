@@ -1,0 +1,139 @@
+<?php
+
+namespace Drupal\ish_drupal_module\Form;
+
+use DOMDocument;
+
+use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormStateInterface;
+
+use \Drupal\file\Entity\File;
+use \Drupal\node\Entity\Node;
+use \Drupal\node\Entity\User;
+
+use Drupal\jwt\Transcoder\JwtTranscoder;
+
+
+function logg($object, $label=null) {
+  print($label . ":");
+  echo "<br />";
+  dump($object);
+}
+
+
+/**
+ * Implements an example form.
+**/
+class ForYoutube extends FormBase {
+
+  /**
+   * {@inheritdoc}
+  **/
+  public function getFormId() {
+    return 'for_youtube';
+  }
+
+  /**
+   * {@inheritdoc}
+  **/
+  public function buildForm(array $form, FormStateInterface $form_state) {
+    // $form_1 = \Drupal::entityTypeManager()
+    //   ->getFormObject('aphorism', 'contribute');
+    // return \Drupal::formBuilder()->getForm($form_1);
+
+    $vocabulary_id = 'tags';
+    $taxonomy = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree($vocabulary_id);
+    $options = [];
+    foreach ($taxonomy as $tag) {
+      $options[$tag->tid] = $tag->name;
+    }
+    // logg($options, '$options');
+
+    $form['youtube_url'] = [
+      '#type' => 'textfield',
+      '#title' => t('youtube url'),
+      '#required' => true,
+    ];
+    $form['tags'] = [
+      '#type' => 'checkboxes',
+      '#title' => t('Tags2'),
+      '#options' => $options,
+      '#required' => false,
+    ];
+    $form['actions']['#type'] = 'actions';
+    $form['actions']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => $this->t('Submit'),
+      '#button_type' => 'primary',
+    );
+
+    /* add autocomplete tags */
+    // $vid1 = 'media_tags';
+    // $form['tags'] = [
+    //   '#type' => 'entity_autocomplete',
+    //   '#title' => $this->t('Tags'),
+    //   '#target_type' => 'taxonomy_term',
+    //   '#selection_settings' => [
+    //     'target_bundles' => [$vid1],  //could be [$vid1, $vid2..].
+    //   ],
+    // //      '#tags' => TRUE,
+    // ];
+
+
+
+    return $form;
+  }
+
+  function youtube_title(string $id) {
+    $doc = new DOMDocument();
+    $doc->loadHTMLFile("https://www.youtube.com/watch?v=" . $id);
+    $doc->preserveWhiteSpace = false;
+    return $title = $doc->getElementsByTagName('title')[0]->nodeValue;
+  }
+
+  /**
+   * {@inheritdoc}
+   * Example: https://www.youtube.com/watch?v=pjgFYQMWtqo
+  **/
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    $user = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
+    $node_manager  = \Drupal::entityTypeManager()->getStorage('node');
+    // $taxonomy = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+    $params = $form_state->getValues();
+    // logg($params, '$params');
+
+
+
+    $tmp = parse_url($form_state->getValue('youtube_url'), PHP_URL_QUERY);
+    parse_str($tmp, $tmp);
+    // logg($tmp);
+    $youtube_id = $tmp['v'];
+    $youtube_title = $this->youtube_title($youtube_id);
+
+    $body = <<<AOL
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/$youtube_id" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write;
+        encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen></iframe>
+    AOL;
+
+
+    $type = 'advanced_page';
+    $new_item = $node_manager->create([
+      'author' => $user,
+      'body' => [
+        'value' => $body,
+        'format' => 'full_html',
+      ],
+      'status' => 1,
+      'title' => $youtube_title,
+      'type' => $type,
+    ]);
+    $new_item->field_tags[] = $these_tags;
+    foreach (array_filter(array_values($params['tags'])) as $val) {
+      $new_item->field_tags[] = [ 'target_id' => $val ];
+    }
+    $new_item->save();
+    \Drupal::messenger()->addMessage('Item From Youtube has been saved.');
+  }
+
+}

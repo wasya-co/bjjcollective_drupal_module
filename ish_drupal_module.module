@@ -32,6 +32,11 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 //   exit(0);
 // }
 
+function ish_drupal_module_entity_type_build(array &$entity_types) {
+  $entity_types['node']->setFormClass('for_youtube', 'Drupal\node\NodeForm');
+  // $entity_types['node']->setFormClass('for_youtube', 'ForYoutube');
+}
+
 /**
  * Implements hook_theme().
  *
@@ -54,6 +59,7 @@ function ish_drupal_module_theme($existing, $type, $theme, $path) {
       'template' => 'dashboard',
       'path' => $path . '/templates/users',
       'variables' => [
+        'for_youtube_form' => NULL,
       ],
     ],
     'ish_users_edit' => [
@@ -172,3 +178,8 @@ function ish_drupal_module_entity_form_display_alter(Drupal\Core\Entity\Entity\E
 //   // Redirect the user to the third-party login page.
 //   $form_state->setRedirect($login_url);
 // }
+
+/* function ish_drupal_module_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  \Drupal::messenger()->addMessage('Form ID: ' . $form_id);
+  // \Drupal::logger('nisto_form_alter')->notice('Form ID: ' . $form_id); // Or log it to watchdog log.
+} // */
