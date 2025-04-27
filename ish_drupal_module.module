@@ -1,5 +1,17 @@
 <?
 
+function logg($object, $label=null) {
+  print($label . ":");
+  echo "<br />";
+  dump($object);
+}
+
+function puts($object, $label=null) {
+  print($label . ":");
+  echo "<br />";
+  dump($object);
+}
+
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 

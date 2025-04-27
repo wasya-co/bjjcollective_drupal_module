@@ -7,19 +7,6 @@ use \Drupal\node\NodeInterface;
 use \Drupal\taxonomy\Entity\Term;
 use \Symfony\Component\HttpFoundation\Request;
 
-// function logg($object, $label=null) {
-//   print($label . ":");
-//   echo "<br />";
-//   dump($object);
-// }
-
-// function puts($object, $label=null) {
-//   print($label . ":");
-//   echo "<br />";
-//   dump($object);
-// }
-
-
 /**
  * Bjjc controller.
 **/

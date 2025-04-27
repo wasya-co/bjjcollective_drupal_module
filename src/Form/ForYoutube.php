@@ -13,14 +13,6 @@ use \Drupal\node\Entity\User;
 
 use Drupal\jwt\Transcoder\JwtTranscoder;
 
-
-function logg($object, $label=null) {
-  print($label . ":");
-  echo "<br />";
-  dump($object);
-}
-
-
 /**
  * Implements an example form.
 **/
