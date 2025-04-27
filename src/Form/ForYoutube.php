@@ -111,6 +111,7 @@ class ForYoutube extends FormBase {
 
 
     $type = 'page_youtube';
+    $issue_uuid = '4ac9695b-0854-4972-8528-1f52e21d2235'; // taxonomy_term/35 :: 2024q1-issue
     $new_item = $node_manager->create([
       'author' => $user,
       'body' => [
@@ -118,6 +119,7 @@ class ForYoutube extends FormBase {
         'format' => 'full_html',
       ],
       'field_youtube_id' => $youtube_id,
+      'field_issue' => [ 'target_id' => $issue_uuid ],
       'status' => 1,
       'title' => $youtube_title,
       'type' => $type,
