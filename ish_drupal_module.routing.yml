@@ -76,6 +76,15 @@ ish_drupal_module.tags_index:
   requirements:
     _permission: 'access content'
 
+ish_drupal_module.settings:
+  path: '/admin/config/ish_drupal_module/settings'
+  defaults:
+    _form: '\Drupal\ish_drupal_module\Form\SettingsForm'
+    _title: 'ish_drupal_module Settings'
+  requirements:
+    _permission: 'administer site configuration'
+
+
 ish_drupal_module.tags_show:
   path: '/tag/{tagname}'
   defaults:
@@ -93,7 +102,6 @@ ish_drupal_module.users_dashboard:
 ish_drupal_module.users_my_edit:
   path: '/user/my-edit'
   defaults:
-    # _controller: '\Drupal\ish_drupal_module\Controller\UsersController::my_edit'
     _form: '\Drupal\ish_drupal_module\Form\UsersEditForm'
   requirements:
     _permission: 'create contributed_post content'

@@ -2,7 +2,7 @@
 
 namespace Drupal\ish_drupal_module\Form;
 
-use DOMDocument;
+// use DOMDocument;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -70,12 +70,25 @@ class ForYoutube extends FormBase {
     return $form;
   }
 
-  function youtube_title(string $id) {
+  /* function youtube_title_old(string $id) {
     $doc = new DOMDocument();
     $doc->loadHTMLFile("https://www.youtube.com/watch?v=" . $id);
     $doc->preserveWhiteSpace = false;
     $title = $doc->getElementsByTagName('title')[0]->nodeValue;
     \Drupal::logger('ish_drupal_module_form_alter')->notice('youtube title: ' . $title);
+    return $title;
+  } // */
+
+  function youtube_title(string $id) {
+    $config = \Drupal::config('ish_drupal_module.settings');
+    $api_key = $config->get('google_api_youtube_key');
+
+    $url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id='.$id.'&key='.$api_key;
+    $json = file_get_contents($url);
+    $decoded_json = json_decode($json, false);
+    // logg($decoded_json, '$decoded_json');
+    $title = $decoded_json->items[0]->snippet->title;
+    // logg($title, 'ze title');
     return $title;
   }
 

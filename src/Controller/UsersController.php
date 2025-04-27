@@ -6,6 +6,12 @@ use Drupal\node\NodeInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\Request;
 
+function logg($object, $label=null) {
+  print($label . ":");
+  echo "<br />";
+  dump($object);
+}
+
 /**
  * Users controller.
 **/
@@ -24,8 +30,6 @@ class UsersController extends ControllerBase {
    * dashboard()
   **/
   public function dashboard( Request $request ) {
-    $user = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
-
     $form = \Drupal::formBuilder()->getForm('Drupal\ish_drupal_module\Form\ForYoutube');
 
     $build = [
