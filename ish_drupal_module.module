@@ -1,5 +1,8 @@
 <?
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
+
 function logg($object, $label=null) {
   print($label . ":");
   echo "<br />";
@@ -12,7 +15,6 @@ function puts($object, $label=null) {
   dump($object);
 }
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 
 // function ish_drupal_module_form_user_register_form_alter(&$form, $form_state, $form_id) {
@@ -118,6 +120,15 @@ function ish_drupal_module_theme($existing, $type, $theme, $path) {
         'newsitems' => [],
       ],
     ],
+
+    'youtube_check_channels' => [
+      'render element' => 'children',
+      'template' => 'check_channels',
+      'path' => $path . '/templates/youtube',
+      'variables' => [
+      ],
+    ],
+
   ];
 
 }

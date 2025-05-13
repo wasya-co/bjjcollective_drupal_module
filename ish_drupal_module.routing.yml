@@ -114,3 +114,12 @@ ish_drupal_module.contrbuted_post_form:
   requirements:
     _permission: 'create contributed_post content'
     # _access: 'TRUE'
+
+
+ish_drupal_module.youtube_check_channels:
+  path: '/youtube/check-channels'
+  defaults:
+    _title: 'Check Youtube Channels'
+    _controller: '\Drupal\ish_drupal_module\Controller\YoutubeController::check_channels'
+  requirements:
+    _access: 'TRUE'
