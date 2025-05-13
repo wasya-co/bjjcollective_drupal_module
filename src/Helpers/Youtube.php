@@ -20,7 +20,6 @@ class Youtube {
   /**
    * https://stackoverflow.com/questions/18953499/youtube-api-to-fetch-all-videos-on-a-channel
    * https://www.googleapis.com/youtube/v3/search?key={your_key_here}&channelId={channel_id_here}&part=snippet,id&order=date&maxResults=5
-   * https://www.googleapis.com/youtube/v3/search?key=AIzaSyCSyVKmnNmHgpmN0StTA_cM7-bfmFDLxP0&channelId=UCGttrUON87gWfU6dMWm1fcA&part=snippet,id&order=date&maxResults=5&videoDuration=long&type=video
    * $channel_id = '@Campbellteaching';
    * tucker carlson: UCGttrUON87gWfU6dMWm1fcA
   **/
