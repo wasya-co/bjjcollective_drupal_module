@@ -1,7 +1,7 @@
 <?
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
-
+use Drupal\node\Entity\Node;
 
 function logg($object, $label=null) {
   print($label . ":");
@@ -206,3 +206,25 @@ function ish_drupal_module_entity_form_display_alter(Drupal\Core\Entity\Entity\E
   \Drupal::messenger()->addMessage('Form ID: ' . $form_id);
   // \Drupal::logger('nisto_form_alter')->notice('Form ID: ' . $form_id); // Or log it to watchdog log.
 } // */
+
+/**
+ * For bjjcollective_com: related nodes for v2 type of video.
+**/
+function ish_drupal_module_node_view(&$build) {
+  if ('v2' == $build['uid']['#bundle'] && 'full' == $build['#view_mode']) {
+    $this_node = Node::load($build['#node']->nid[0]->value);
+    $tags = [];
+    foreach( $this_node->field_tags2 as $k => $v ) {
+      array_push( $tags, $v->target_id );
+    }
+    $nids = \Drupal::entityQuery('node')->condition('field_tags2', $tags, 'in')->execute();
+    if (($key = array_search($build['#node']->nid[0]->value, $nids)) !== false) { ## https://stackoverflow.com/questions/7225070/php-array-delete-by-value-not-key
+      unset($nids[$key]);
+    }
+    $relatedNodes = \Drupal\node\Entity\Node::loadMultiple($nids);
+    $relatedNodesView = \Drupal::entityTypeManager()
+      ->getViewBuilder('node')
+      ->viewMultiple($relatedNodes, 'card');
+    $build['relatedNodes'] = $relatedNodesView;
+  }
+}
