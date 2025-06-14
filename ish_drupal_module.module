@@ -92,6 +92,7 @@ function ish_drupal_module_theme($existing, $type, $theme, $path) {
       ],
     ],
 
+
     'menu_user_authenticated' => [
       'path' => $path . '/templates',
       // 'render element' => 'children',
@@ -118,6 +119,14 @@ function ish_drupal_module_theme($existing, $type, $theme, $path) {
         'tag' => null,
         'features' => [],
         'newsitems' => [],
+      ],
+    ],
+
+    'videos_show2' => [
+      'template' => 'show2',
+      'path' => $path. '/templates/videos',
+      'variables' => [
+        'content' => NULL,
       ],
     ],
 
