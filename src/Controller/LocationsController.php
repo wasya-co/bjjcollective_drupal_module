@@ -6,12 +6,6 @@ use Drupal\node\NodeInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\Request;
 
-// function logg($object, $label=null) {
-//   print($label . ":");
-//   echo "<br />";
-//   dump($object);
-// }
-
 
 /**
  * Locations controller.
@@ -44,7 +38,7 @@ class LocationsController extends ControllerBase {
       'type' => 'location',
       'field_users' => $cuId,
     ]);
-    logg($my_locations, 'my_locations');
+    // logg($my_locations, 'my_locations');
 
     return [
       '#theme' => 'ish_locations_index',

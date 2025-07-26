@@ -1,3 +1,158 @@
+<?
+
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
+
+function logg($object, $label=null) {
+  print($label . ":");
+  echo "<br />";
+  dump($object);
+}
+
+function puts($object, $label=null) {
+  print($label . ":");
+  echo "<br />";
+  dump($object);
+}
+
+
+
+// function ish_drupal_module_form_user_register_form_alter(&$form, $form_state, $form_id) {
+//   // $form['account']['name']['#title'] = t('First and last name');
+//   // $form['account']['name']['#description'] = t("Rewrite this about spaces, periods (.), hyphens (-) and apostrophes (').");
+//
+//   // $markup = '<div id="my-custom-markup"><h1>Here is my markup</h1></div>';
+//   // $form['field_mycustommarkup'] = [
+//   //     '#type' => 'markup',
+//   //     '#markup' => $markup,
+//   //     '#weight' => 1,
+//   // ];
+//
+//   // $markup = '<div id="my-custom-markup"><h1>New 222 Recaptcha</h1></div>';
+//   // $form['field_mycustommarkup'] = [
+//   //     '#type' => 'markup',
+//   //     '#markup' => $markup,
+//   //     '#weight' => 10,
+//   // ];
+//
+//   // $form['#submit'][] = 'ish_drupal_module_2_submit';
+// }
+
+// function ish_drupal_module_2_submit($form_id, $form_values) {
+//   drupal_set_message(t('Submit Function Executed!'));
+//   var_dump("And this, the form has been submitted.");
+//   var_dump( $form_id );
+//   var_dump( $form_values );
+//   exit(0);
+// }
+
+function ish_drupal_module_entity_type_build(array &$entity_types) {
+  $entity_types['node']->setFormClass('for_youtube', 'Drupal\node\NodeForm');
+  // $entity_types['node']->setFormClass('for_youtube', 'ForYoutube');
+}
+
+/**
+ * Implements hook_theme().
+ *
+ * See: https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Render%21theme.api.php/function/hook_theme/8.2.x
+ *
+ * If you change this method, clear theme registry and routing
+ * table 'drush cc theme-registry' and 'drush cc router'.
+**/
+function ish_drupal_module_theme($existing, $type, $theme, $path) {
+
+  return [
+    'error_404' => [
+      'render element' => 'children',
+      'template' => 'error_404',
+      'path' => $path . '/templates',
+      'variables' => [],
+    ],
+
+    'ish_users_dashboard' => [
+      'template' => 'dashboard',
+      'path' => $path . '/templates/users',
+      'variables' => [
+        'for_youtube_form' => NULL,
+      ],
+    ],
+    'ish_users_edit' => [
+      'template' => 'edit',
+      'path' => $path . '/templates/users',
+      'variables' => [
+      ],
+    ],
+    'ish_locations_show' => [
+      // 'render element' => 'requirements',
+      'template' => 'show',
+      'path' => $path . '/templates/locations',
+      'variables' => [
+        'location' => NULL,
+        // 'request' => NULL,
+      ],
+    ],
+
+    'menu_user_authenticated' => [
+      'path' => $path . '/templates',
+      // 'render element' => 'children',
+      'template' => 'menu_user_authenticated',
+      'variables' => [
+        'testvar' => NULL,
+      ],
+    ],
+
+    'my_feed' => [
+      'path' => $path . '/templates',
+      'render element' => 'elements', // works?!
+      'template' => 'my_feed',
+      'variables' => [
+        'test_var_1' => null,
+      ],
+    ],
+
+    'tags_show' => [
+      'render element' => 'children',
+      'template' => 'show',
+      'path' => $path . '/templates/tags',
+      'variables' => [
+        'tag' => null,
+        'features' => [],
+        'newsitems' => [],
+      ],
+    ],
+
+    'youtube_check_channels' => [
+      'render element' => 'children',
+      'template' => 'check_channels',
+      'path' => $path . '/templates/youtube',
+      'variables' => [
+      ],
+    ],
+
+  ];
+
+}
+
+
+function ish_drupal_module_entity_form_display_alter(Drupal\Core\Entity\Entity\EntityFormDisplay &$form_display, array $context) {
+  if (in_array('authenticated', \Drupal::currentUser()->getRoles()) &&
+      $context['entity_type'] === 'node' &&
+      $context['bundle'] === 'aphorism') {
+    $storage = \Drupal::entityTypeManager()->getStorage('entity_form_display');
+    $differentDisplay = $storage->load("{$context['entity_type']}.{$context['bundle']}.contribute"); // 'my_form_display' was created via /admin/structure/display-modes/form
+    if ($differentDisplay) {
+      $form_display = $differentDisplay;
+    }
+  }
+}
+
+/**
+ * another example
+**/
+// function ish_drupal_module_entity_type_build(array &$entity_types) {
+//   $entity_types['aphorism']->setFormClass('contribute', 'Drupal\aphorism\ContributeForm');
+// }
+
 
 
 /**
@@ -26,6 +181,30 @@
 
 
 
+/**
+ * From: https://www.drupalatyourfingertips.com/hooks
+ * Implements hook_form_FORM_ID_alter().
+**/
+// function ish_drupal_module_form_user_login_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+//   // Add a custom submit button to the login form.
+//   $form['third_party_login'] = [
+//     '#type' => 'submit',
+//     '#value' => t('Login with Third-Party Provider'),
+//     '#submit' => ['ish_drupal_module_user_login_form_submit'], // Call the custom submit function.
+//   ];
+// }
+// function ish_drupal_module_user_login_form_submit(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+//   // Get the username and password from the form state.
+//   $username = $form_state->getValue('name');
+//   $password = $form_state->getValue('pass');
+//   // Build the URL for the third-party login page, including the username and password as query parameters.
+//   $login_url = 'https://thirdpartyprovider.com/login?username=' . urlencode($username) . '&password=' . urlencode($password);
+//   // Redirect the user to the third-party login page.
+//   $form_state->setRedirect($login_url);
+// }
 
-
+/* function ish_drupal_module_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  \Drupal::messenger()->addMessage('Form ID: ' . $form_id);
+  // \Drupal::logger('nisto_form_alter')->notice('Form ID: ' . $form_id); // Or log it to watchdog log.
+} // */
 

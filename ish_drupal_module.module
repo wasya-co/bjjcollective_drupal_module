@@ -1,36 +1,23 @@
 <?
+
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+function logg($object, $label=null) {
+  print($label . ":");
+  echo "<br />";
+  dump($object);
+}
 
-// function ish_drupal_module_form_user_register_form_alter(&$form, $form_state, $form_id) {
-//   // $form['account']['name']['#title'] = t('First and last name');
-//   // $form['account']['name']['#description'] = t("Rewrite this about spaces, periods (.), hyphens (-) and apostrophes (').");
-//
-//   // $markup = '<div id="my-custom-markup"><h1>Here is my markup</h1></div>';
-//   // $form['field_mycustommarkup'] = [
-//   //     '#type' => 'markup',
-//   //     '#markup' => $markup,
-//   //     '#weight' => 1,
-//   // ];
-//
-//   // $markup = '<div id="my-custom-markup"><h1>New 222 Recaptcha</h1></div>';
-//   // $form['field_mycustommarkup'] = [
-//   //     '#type' => 'markup',
-//   //     '#markup' => $markup,
-//   //     '#weight' => 10,
-//   // ];
-//
-//   // $form['#submit'][] = 'ish_drupal_module_2_submit';
-// }
+function puts($object, $label=null) {
+  print($label . ":");
+  echo "<br />";
+  dump($object);
+}
 
-// function ish_drupal_module_2_submit($form_id, $form_values) {
-//   drupal_set_message(t('Submit Function Executed!'));
-//   var_dump("And this, the form has been submitted.");
-//   var_dump( $form_id );
-//   var_dump( $form_values );
-//   exit(0);
-// }
 
 function ish_drupal_module_entity_type_build(array &$entity_types) {
   $entity_types['node']->setFormClass('for_youtube', 'Drupal\node\NodeForm');
@@ -78,6 +65,7 @@ function ish_drupal_module_theme($existing, $type, $theme, $path) {
       ],
     ],
 
+
     'menu_user_authenticated' => [
       'path' => $path . '/templates',
       // 'render element' => 'children',
@@ -106,6 +94,23 @@ function ish_drupal_module_theme($existing, $type, $theme, $path) {
         'newsitems' => [],
       ],
     ],
+
+    'videos_show2' => [
+      'template' => 'show2',
+      'path' => $path. '/templates/videos',
+      'variables' => [
+        'content' => NULL,
+      ],
+    ],
+
+    'youtube_check_channels' => [
+      'render element' => 'children',
+      'template' => 'check_channels',
+      'path' => $path . '/templates/youtube',
+      'variables' => [
+      ],
+    ],
+
   ];
 
 }
@@ -122,7 +127,6 @@ function ish_drupal_module_entity_form_display_alter(Drupal\Core\Entity\Entity\E
     }
   }
 }
-
 
 
 /* Redirect user on login.
@@ -142,5 +146,27 @@ function ish_drupal_module_user_login_submit(&$form, $form_state) {
   }
   else {
     $request->query->set('destination', $request->request->get('destination'));
+  }
+}
+
+/**
+ * For bjjcollective_com: related nodes for v2 type of video.
+**/
+function ish_drupal_module_node_view(&$build) {
+  if ('v2' == $build['uid']['#bundle'] && 'full' == $build['#view_mode']) {
+    $this_node = Node::load($build['#node']->nid[0]->value);
+    $tags = [];
+    foreach( $this_node->field_tags2 as $k => $v ) {
+      array_push( $tags, $v->target_id );
+    }
+    $nids = \Drupal::entityQuery('node')->condition('field_tags2', $tags, 'in')->execute();
+    if (($key = array_search($build['#node']->nid[0]->value, $nids)) !== false) { ## https://stackoverflow.com/questions/7225070/php-array-delete-by-value-not-key
+      unset($nids[$key]);
+    }
+    $relatedNodes = \Drupal\node\Entity\Node::loadMultiple($nids);
+    $relatedNodesView = \Drupal::entityTypeManager()
+      ->getViewBuilder('node')
+      ->viewMultiple($relatedNodes, 'card');
+    $build['relatedNodes'] = $relatedNodesView;
   }
 }

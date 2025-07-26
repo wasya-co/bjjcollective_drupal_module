@@ -10,20 +10,6 @@ use \Drupal\node\Entity\Node;
 use \Drupal\node\Entity\User;
 
 use Drupal\jwt\Transcoder\JwtTranscoder;
-
-
-function logg($object, $label=null) {
-  print($label . ":");
-  echo "<br />";
-  dump($object);
-}
-
-// function puts($object, $label=null) {
-//   print($label . ":");
-//   echo "<br />";
-//   dump($object);
-// }
-
 /**
  * Implements an example form.
 **/

@@ -2,24 +2,8 @@
 
 namespace Drupal\ish_drupal_module\Form;
 
-use DOMDocument;
-
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-
-use \Drupal\file\Entity\File;
-use \Drupal\node\Entity\Node;
-use \Drupal\node\Entity\User;
-
-use Drupal\jwt\Transcoder\JwtTranscoder;
-
-
-function logg($object, $label=null) {
-  print($label . ":");
-  echo "<br />";
-  dump($object);
-}
-
 
 /**
  * Implements an example form.
@@ -41,7 +25,7 @@ class ForYoutube extends FormBase {
     //   ->getFormObject('aphorism', 'contribute');
     // return \Drupal::formBuilder()->getForm($form_1);
 
-    $vocabulary_id = 'tags';
+    $vocabulary_id = 'tagscontrib';
     $taxonomy = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree($vocabulary_id);
     $options = [];
     foreach ($taxonomy as $tag) {
@@ -56,7 +40,7 @@ class ForYoutube extends FormBase {
     ];
     $form['tags'] = [
       '#type' => 'checkboxes',
-      '#title' => t('Tags2'),
+      '#title' => t('Tags'),
       '#options' => $options,
       '#required' => false,
     ];
@@ -67,28 +51,20 @@ class ForYoutube extends FormBase {
       '#button_type' => 'primary',
     );
 
-    /* add autocomplete tags */
-    // $vid1 = 'media_tags';
-    // $form['tags'] = [
-    //   '#type' => 'entity_autocomplete',
-    //   '#title' => $this->t('Tags'),
-    //   '#target_type' => 'taxonomy_term',
-    //   '#selection_settings' => [
-    //     'target_bundles' => [$vid1],  //could be [$vid1, $vid2..].
-    //   ],
-    // //      '#tags' => TRUE,
-    // ];
-
-
-
     return $form;
   }
 
   function youtube_title(string $id) {
-    $doc = new DOMDocument();
-    $doc->loadHTMLFile("https://www.youtube.com/watch?v=" . $id);
-    $doc->preserveWhiteSpace = false;
-    return $title = $doc->getElementsByTagName('title')[0]->nodeValue;
+    $config = \Drupal::config('ish_drupal_module.settings');
+    $api_key = $config->get('google_api_youtube_key');
+
+    $url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id='.$id.'&key='.$api_key;
+    $json = file_get_contents($url);
+    $decoded_json = json_decode($json, false);
+    // logg($decoded_json, '$decoded_json');
+    $title = $decoded_json->items[0]->snippet->title;
+    // logg($title, 'ze title');
+    return $title;
   }
 
   /**
@@ -102,8 +78,6 @@ class ForYoutube extends FormBase {
     $params = $form_state->getValues();
     // logg($params, '$params');
 
-
-
     $tmp = parse_url($form_state->getValue('youtube_url'), PHP_URL_QUERY);
     parse_str($tmp, $tmp);
     // logg($tmp);
@@ -116,19 +90,20 @@ class ForYoutube extends FormBase {
         allowfullscreen></iframe>
     AOL;
 
-
-    $type = 'advanced_page';
+    $type = 'page_youtube';
+    $issue_uuid = '35'; // '4ac9695b-0854-4972-8528-1f52e21d2235'; // taxonomy_term/35 :: 2024q1-issue
     $new_item = $node_manager->create([
       'author' => $user,
       'body' => [
         'value' => $body,
         'format' => 'full_html',
       ],
+      'field_youtube_id' => $youtube_id,
+      'field_issue' => [ 'target_id' => $issue_uuid ],
       'status' => 1,
       'title' => $youtube_title,
       'type' => $type,
     ]);
-    $new_item->field_tags[] = $these_tags;
     foreach (array_filter(array_values($params['tags'])) as $val) {
       $new_item->field_tags[] = [ 'target_id' => $val ];
     }
@@ -137,3 +112,4 @@ class ForYoutube extends FormBase {
   }
 
 }
+

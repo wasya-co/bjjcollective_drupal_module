@@ -24,8 +24,6 @@ class UsersController extends ControllerBase {
    * dashboard()
   **/
   public function dashboard( Request $request ) {
-    $user = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
-
     $form = \Drupal::formBuilder()->getForm('Drupal\ish_drupal_module\Form\ForYoutube');
 
     $build = [

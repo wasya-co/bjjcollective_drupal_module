@@ -1,12 +1,5 @@
 
 
-ish_drupal_module.node.create_for_youtube:
-  path: '/node/add/advanced_page/for_youtube'
-  defaults:
-    _form: '\Drupal\ish_drupal_module\Form\ForYoutube'
-    _title: 'New Advanced Page for Youtube'
-  requirements:
-    _role: 'content_editor'
 
 ish_drupal_module.aphorisms_index:
   path: "/aphorisms"
@@ -78,6 +71,23 @@ ish_drupal_module.tags_index:
   requirements:
     _permission: 'access content'
 
+ish_drupal_module.settings:
+  path: '/admin/config/ish_drupal_module/settings'
+  defaults:
+    _form: '\Drupal\ish_drupal_module\Form\SettingsForm'
+    _title: 'ish_drupal_module Settings'
+  requirements:
+    _permission: 'administer site configuration'
+
+ish_drupal_module.node.create_for_youtube:
+  path: '/node/add/advanced_page/for_youtube'
+  defaults:
+    _form: '\Drupal\ish_drupal_module\Form\ForYoutube'
+    _title: 'New Advanced Page for Youtube'
+  requirements:
+    _role: 'content_editor'
+
+
 ish_drupal_module.tags_show:
   path: '/tag/{tagname}'
   defaults:
@@ -95,7 +105,6 @@ ish_drupal_module.users_dashboard:
 ish_drupal_module.users_my_edit:
   path: '/user/my-edit'
   defaults:
-    # _controller: '\Drupal\ish_drupal_module\Controller\UsersController::my_edit'
     _form: '\Drupal\ish_drupal_module\Form\UsersEditForm'
   requirements:
     _permission: 'create contributed_post content'
@@ -108,3 +117,20 @@ ish_drupal_module.contrbuted_post_form:
   requirements:
     _permission: 'create contributed_post content'
     # _access: 'TRUE'
+
+
+ish_drupal_module.videos_showlegacy:
+  path: '/video/{id}/{slug}'
+  defaults:
+    _controller: '\Drupal\ish_drupal_module\Controller\VideosController::showlegacy'
+  requirements:
+    _permission: 'access content'
+
+
+ish_drupal_module.youtube_check_channels:
+  path: '/youtube/check-channels'
+  defaults:
+    _title: 'Check Youtube Channels'
+    _controller: '\Drupal\ish_drupal_module\Controller\YoutubeController::check_channels'
+  requirements:
+    _access: 'TRUE'

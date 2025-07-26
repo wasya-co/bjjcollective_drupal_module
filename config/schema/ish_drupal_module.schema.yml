@@ -1,0 +1,8 @@
+
+ish_drupal_module.settings:
+  type: config_object
+  label: 'My Ish Settings'
+  mapping:
+    google_api_youtube_key:
+      type: string
+      label: 'Google Api Youtube Key'
