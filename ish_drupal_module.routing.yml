@@ -21,12 +21,14 @@ ish_drupal_module.aphorisms_index:
 ish_drupal_module.aphorisms_new:
   path: "/aphorisms/new"
   defaults:
-    # _form: '\Drupal\ish_drupal_module\Form\AphorismsNewForm'
+    _form: '\Drupal\ish_drupal_module\Form\AphorismsNewForm'
+
     # _controller: '\Drupal\ish_drupal_module\Controller\AphorismsController::new'
-    _entity_form: node.edit
-    _title: 'New Aphorism'
+
+    # _entity_form: node.edit
+    # _title: 'New Aphorism'
   requirements:
-    _permission: 'access content'
+    _role: 'content_contributor'
   options:
     parameters:
 
@@ -88,7 +90,7 @@ ish_drupal_module.users_dashboard:
   defaults:
     _controller: '\Drupal\ish_drupal_module\Controller\UsersController::dashboard'
   requirements:
-    _role: 'content_editor'
+    _role: 'content_contributor'
 
 ish_drupal_module.users_my_edit:
   path: '/user/my-edit'

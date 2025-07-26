@@ -23,7 +23,9 @@ class CurrentUserBlock extends BlockBase {
     $email = $user->getEmail();
 
     return [
-      '#markup' => $email,
+      // '#markup' => $email,
+      '#theme' => 'current_user_block',
+      '#email' => $email,
     ];
   }
 

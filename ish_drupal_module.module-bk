@@ -1,0 +1,31 @@
+
+
+/**
+ * another example
+**/
+// function ish_drupal_module_form_alter(&$form, $form_state, $form_id) {
+//   $user = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
+//   $current_roles = \Drupal::currentUser()->getRoles();
+//   // var_dump('current_roles', $current_roles);
+//   switch($form_id) {
+//     case 'node_contributed_post_edit_form':
+//       if (!in_array('administrator', $current_roles)) {
+//         $form['field_issue']['#access'] = false;
+//         $form['revision_information']['#access'] = false;
+//       }
+//       break;
+//     case 'user_login_form':
+//      $form['#submit'][] = 'ish_drupal_module_submit_handler';
+//      break;
+//   }
+// }
+// function ish_drupal_module_submit_handler($form, $form_state) {
+//    $url = Url::fromRoute('/user/dashboard');
+//    $form_state->setRedirectUrl($url);
+// }
+
+
+
+
+
+
