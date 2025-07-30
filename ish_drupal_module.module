@@ -41,7 +41,12 @@ function ish_drupal_module_theme($existing, $type, $theme, $path) {
       'path' => $path . '/templates',
       'variables' => [],
     ],
-
+    'ish_users_dance_instructor_dashboard' => [
+      'template' => 'dance-instructor-dashboard',
+      'path' => $path . '/templates/users',
+      'variables' => [
+      ],
+    ],
     'ish_users_dashboard' => [
       'template' => 'dashboard',
       'path' => $path . '/templates/users',
@@ -137,20 +142,21 @@ function ish_drupal_module_form_user_login_form_alter(&$form, $form_state) {
   $form['#submit'][] = 'ish_drupal_module_user_login_submit';
 }
 function ish_drupal_module_user_login_submit(&$form, $form_state) {
-  $url = Url::fromRoute('ish_drupal_module.users_dashboard');
+  $dashboard_url = Url::fromRoute('ish_drupal_module.users_dashboard');
+  $dance_instructor_dashboard_url = Url::fromRoute('ish_drupal_module.users_dance_instructor_dashboard');
   // Check if a destination was set, probably on an exception controller.
   // @see \Drupal\user\Form\UserLoginForm::submitForm()
   $request = \Drupal::service('request_stack')->getCurrentRequest();
   if (!$request->request->has('destination')) {
-    $form_state->setRedirectUrl($url);
+    $form_state->setRedirectUrl($dashboard_url);
   }
   else {
     $request->query->set('destination', $request->request->get('destination'));
   }
 }
 
-/**
- * For bjjcollective_com: related nodes for v2 type of video.
+/* For bjjcollective_com: related nodes for v2 type of video.
+ *
 **/
 function ish_drupal_module_node_view(&$build) {
   if ('v2' == $build['uid']['#bundle'] && 'full' == $build['#view_mode']) {
