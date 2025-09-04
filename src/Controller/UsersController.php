@@ -20,6 +20,13 @@ class UsersController extends ControllerBase {
   //   ];
   // }
 
+  public function dance_instructor_dashboard( Request $request ) {
+    $build = [
+      '#theme' => 'ish_users_dance_instructor_dashboard',
+    ];
+    return $build;
+  }
+
   /**
    * dashboard()
   **/

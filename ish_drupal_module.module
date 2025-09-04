@@ -1,9 +1,10 @@
 <?
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Drupal\node\Entity\Node;
 
 function logg($object, $label=null) {
   print($label . ":");
@@ -40,7 +41,12 @@ function ish_drupal_module_theme($existing, $type, $theme, $path) {
       'path' => $path . '/templates',
       'variables' => [],
     ],
-
+    'ish_users_dance_instructor_dashboard' => [
+      'template' => 'dance-instructor-dashboard',
+      'path' => $path . '/templates/users',
+      'variables' => [
+      ],
+    ],
     'ish_users_dashboard' => [
       'template' => 'dashboard',
       'path' => $path . '/templates/users',
@@ -127,8 +133,30 @@ function ish_drupal_module_entity_form_display_alter(Drupal\Core\Entity\Entity\E
   }
 }
 
-/**
- * For bjjcollective_com: related nodes for v2 type of video.
+
+/* Redirect user on login.
+ * From: https://drupal.stackexchange.com/questions/195170/redirect-after-user-login
+ * Works!
+**/
+function ish_drupal_module_form_user_login_form_alter(&$form, $form_state) {
+  $form['#submit'][] = 'ish_drupal_module_user_login_submit';
+}
+function ish_drupal_module_user_login_submit(&$form, $form_state) {
+  $dashboard_url = Url::fromRoute('ish_drupal_module.users_dashboard');
+  $dance_instructor_dashboard_url = Url::fromRoute('ish_drupal_module.users_dance_instructor_dashboard');
+  // Check if a destination was set, probably on an exception controller.
+  // @see \Drupal\user\Form\UserLoginForm::submitForm()
+  $request = \Drupal::service('request_stack')->getCurrentRequest();
+  if (!$request->request->has('destination')) {
+    $form_state->setRedirectUrl($dashboard_url);
+  }
+  else {
+    $request->query->set('destination', $request->request->get('destination'));
+  }
+}
+
+/* For bjjcollective_com: related nodes for v2 type of video.
+ *
 **/
 function ish_drupal_module_node_view(&$build) {
   if ('v2' == $build['uid']['#bundle'] && 'full' == $build['#view_mode']) {
