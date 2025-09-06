@@ -1,5 +1,7 @@
 <?php
 
+/* Lets move to full functional tests */
+
 namespace Drupal\Tests\ish_drupal_module\Kernel;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -27,16 +29,16 @@ class CurrentUserBlockTest extends KernelTestBase {
 
   protected function setUp(): void {
     parent::setUp();
-    $container = new ContainerBuilder();
-    $user = $this->createMock(AccountInterface::class);
-    $user->method('id')->willReturn(123);
-    $user->method('getEmail')->willReturn('test_email'); // expected
-    $container->set('current_user', $user);
-    \Drupal::setContainer($container);
+    // $container = new ContainerBuilder();
+    // $user = $this->createMock(AccountInterface::class);
+    // $user->method('id')->willReturn(123);
+    // $user->method('getEmail')->willReturn('test_email'); // expected
+    // $container->set('current_user', $user);
+    // \Drupal::setContainer($container);
   }
 
   public function testBuild() {
-    $actual = \Drupal\ish_drupal_module\Plugin\Block\CurrentUserBlock->build();
+    $actual = Drupal\ish_drupal_module\Plugin\Block\CurrentUserBlock->build();
     // $actual = CurrentUserBlock->build();
 
     $this->assertSame('test_email', $actual['#email']);
