@@ -1,4 +1,4 @@
-<?
+<?php
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -180,6 +180,7 @@ function ish_drupal_module_entity_form_display_alter(Drupal\Core\Entity\Entity\E
 // }
 
 
+
 /**
  * From: https://www.drupalatyourfingertips.com/hooks
  * Implements hook_form_FORM_ID_alter().
@@ -206,3 +207,4 @@ function ish_drupal_module_entity_form_display_alter(Drupal\Core\Entity\Entity\E
   \Drupal::messenger()->addMessage('Form ID: ' . $form_id);
   // \Drupal::logger('nisto_form_alter')->notice('Form ID: ' . $form_id); // Or log it to watchdog log.
 } // */
+

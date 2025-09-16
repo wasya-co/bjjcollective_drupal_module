@@ -1,4 +1,4 @@
-<?
+<?php
 
 namespace Drupal\ish_drupal_module\Controller;
 
@@ -19,6 +19,13 @@ class UsersController extends ControllerBase {
   //     '#markup' => "<h1>Locations Index !!!</h1>",
   //   ];
   // }
+
+  public function dance_instructor_dashboard( Request $request ) {
+    $build = [
+      '#theme' => 'ish_users_dance_instructor_dashboard',
+    ];
+    return $build;
+  }
 
   /**
    * dashboard()

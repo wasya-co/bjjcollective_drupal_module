@@ -14,14 +14,34 @@ ish_drupal_module.aphorisms_index:
 ish_drupal_module.aphorisms_new:
   path: "/aphorisms/new"
   defaults:
-    # _form: '\Drupal\ish_drupal_module\Form\AphorismsNewForm'
+    _form: '\Drupal\ish_drupal_module\Form\AphorismsNewForm'
+
     # _controller: '\Drupal\ish_drupal_module\Controller\AphorismsController::new'
-    _entity_form: node.edit
-    _title: 'New Aphorism'
+
+    # _entity_form: node.edit
+    # _title: 'New Aphorism'
   requirements:
-    _permission: 'access content'
+    _role: 'content_contributor, authenticated_user'
   options:
     parameters:
+
+
+ish_drupal_module.contrbuted_post_form:
+  path: '/contributed_posts/new'
+  defaults:
+    _title: 'New Contributed Post'
+    _form: '\Drupal\ish_drupal_module\Form\ContributedPostForm'
+  requirements:
+    _permission: 'create contributed_post content'
+    # _access: 'TRUE'
+
+ish_drupal_module.node.create_for_youtube:
+  path: '/node/add/advanced_page/for_youtube'
+  defaults:
+    _form: '\Drupal\ish_drupal_module\Form\ForYoutube'
+    _title: 'New Advanced Page for Youtube'
+  requirements:
+    _role: 'content_editor'
 
 
 ish_drupal_module.locations_follow:
@@ -62,12 +82,6 @@ ish_drupal_module.my_feed:
   requirements:
     _permission: 'access content'
 
-ish_drupal_module.tags_index:
-  path: '/tag'
-  defaults:
-    _controller: '\Drupal\ish_drupal_module\Controller\TagsController::index'
-  requirements:
-    _permission: 'access content'
 
 ish_drupal_module.settings:
   path: '/admin/config/ish_drupal_module/settings'
@@ -77,14 +91,13 @@ ish_drupal_module.settings:
   requirements:
     _permission: 'administer site configuration'
 
-ish_drupal_module.node.create_for_youtube:
-  path: '/node/add/advanced_page/for_youtube'
-  defaults:
-    _form: '\Drupal\ish_drupal_module\Form\ForYoutube'
-    _title: 'New Advanced Page for Youtube'
-  requirements:
-    _role: 'content_editor'
 
+ish_drupal_module.tags_index:
+  path: '/tag'
+  defaults:
+    _controller: '\Drupal\ish_drupal_module\Controller\TagsController::index'
+  requirements:
+    _permission: 'access content'
 
 ish_drupal_module.tags_show:
   path: '/tag/{tagname}'
@@ -93,12 +106,20 @@ ish_drupal_module.tags_show:
   requirements:
     _permission: 'access content'
 
+
+ish_drupal_module.users_dance_instructor_dashboard:
+  path: '/dance-instructor/dashboard'
+  defaults:
+    _controller: '\Drupal\ish_drupal_module\Controller\UsersController::dance_instructor_dashboard'
+  requirements:
+    _role: 'dance_instructor'
+
 ish_drupal_module.users_dashboard:
   path: '/user/dashboard'
   defaults:
     _controller: '\Drupal\ish_drupal_module\Controller\UsersController::dashboard'
   requirements:
-    _role: 'content_contributor'
+    _role: 'content_contributor + authenticated'
 
 ish_drupal_module.users_my_edit:
   path: '/user/my-edit'
@@ -106,15 +127,6 @@ ish_drupal_module.users_my_edit:
     _form: '\Drupal\ish_drupal_module\Form\UsersEditForm'
   requirements:
     _permission: 'create contributed_post content'
-
-ish_drupal_module.contrbuted_post_form:
-  path: '/contributed_posts/new'
-  defaults:
-    _title: 'New Contributed Post'
-    _form: '\Drupal\ish_drupal_module\Form\ContributedPostForm'
-  requirements:
-    _permission: 'create contributed_post content'
-    # _access: 'TRUE'
 
 
 ish_drupal_module.videos_showlegacy:
