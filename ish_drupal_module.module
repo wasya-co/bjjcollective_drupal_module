@@ -41,8 +41,14 @@ function ish_drupal_module_theme($existing, $type, $theme, $path) {
       'path' => $path . '/templates',
       'variables' => [],
     ],
-    'ish_users_dance_instructor_dashboard' => [
+    'ish_dance_instructor_dashboard' => [
       'template' => 'dance-instructor-dashboard',
+      'path' => $path . '/templates/users',
+      'variables' => [
+      ],
+    ],
+    'ish_hiring_manager_dashboard' => [
+      'template' => 'hiring-manager-dashboard',
       'path' => $path . '/templates/users',
       'variables' => [
       ],
@@ -52,6 +58,7 @@ function ish_drupal_module_theme($existing, $type, $theme, $path) {
       'path' => $path . '/templates/users',
       'variables' => [
         'for_youtube_form' => NULL,
+        'menu_secondary'   => NULL,
       ],
     ],
     'ish_users_edit' => [
@@ -143,7 +150,7 @@ function ish_drupal_module_form_user_login_form_alter(&$form, $form_state) {
 }
 function ish_drupal_module_user_login_submit(&$form, $form_state) {
   $dashboard_url = Url::fromRoute('ish_drupal_module.users_dashboard');
-  $dance_instructor_dashboard_url = Url::fromRoute('ish_drupal_module.users_dance_instructor_dashboard');
+  $dance_instructor_dashboard_url = Url::fromRoute('ish_drupal_module.dance_instructor_dashboard');
   // Check if a destination was set, probably on an exception controller.
   // @see \Drupal\user\Form\UserLoginForm::submitForm()
   $request = \Drupal::service('request_stack')->getCurrentRequest();

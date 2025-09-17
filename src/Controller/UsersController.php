@@ -22,7 +22,7 @@ class UsersController extends ControllerBase {
 
   public function dance_instructor_dashboard( Request $request ) {
     $build = [
-      '#theme' => 'ish_users_dance_instructor_dashboard',
+      '#theme' => 'ish_dance_instructor_dashboard',
     ];
     return $build;
   }
@@ -31,15 +31,34 @@ class UsersController extends ControllerBase {
    * dashboard()
   **/
   public function dashboard( Request $request ) {
-    $form = \Drupal::formBuilder()->getForm('Drupal\ish_drupal_module\Form\ForYoutube');
+    $youtube_form = \Drupal::formBuilder()->getForm('Drupal\ish_drupal_module\Form\ForYoutube');
+
+    $menu_name = 'dashboard-menu';
+    $parameters = new \Drupal\Core\Menu\MenuTreeParameters();
+    $tree = \Drupal::menuTree()->load($menu_name, $parameters);
+    $tree = \Drupal::menuTree()->transform($tree, [
+      ['callable' => 'menu.default_tree_manipulators:checkAccess'],
+      ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort'],
+    ]);
+    $menu_secondary = \Drupal::menuTree()->build($tree);
+    // logg($menu_secondary, '$menu_secondary');
+
 
     $build = [
       '#theme'            => 'ish_users_dashboard',
-      '#for_youtube_form' => $form,
+      '#for_youtube_form' => $youtube_form,
+      '#menu_secondary'   => $menu_secondary,
     ];
     return $build;
   }
 
+
+  public function hiring_manager_dashboard( Request $request ) {
+    $build = [
+      '#theme' => 'ish_hiring_manager_dashboard',
+    ];
+    return $build;
+  }
 
   /**
    * edit() - myself only

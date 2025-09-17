@@ -107,12 +107,21 @@ ish_drupal_module.tags_show:
     _permission: 'access content'
 
 
-ish_drupal_module.users_dance_instructor_dashboard:
+ish_drupal_module.dance_instructor_dashboard:
   path: '/dance-instructor/dashboard'
   defaults:
     _controller: '\Drupal\ish_drupal_module\Controller\UsersController::dance_instructor_dashboard'
   requirements:
     _role: 'dance_instructor'
+
+
+ish_drupal_module.hiring_manager_dashboard:
+  path: '/hiring-manager/dashboard'
+  defaults:
+    _controller: '\Drupal\ish_drupal_module\Controller\UsersController::hiring_manager_dashboard'
+  requirements:
+    _role: 'hiring_manager'
+
 
 ish_drupal_module.users_dashboard:
   path: '/user/dashboard'
