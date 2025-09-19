@@ -145,6 +145,14 @@ ish_drupal_module.videos_showlegacy:
   requirements:
     _permission: 'access content'
 
+ish_drupal_module.worklogs_redirect:
+  path: '/worklogs/{year}'
+  defaults:
+    _controller: '\Drupal\ish_drupal_module\Controller\WorklogsController::showRedirect'
+  requirements:
+    _role: 'administrator'
+  options:
+    no_cache: 'TRUE'
 
 ish_drupal_module.youtube_check_channels:
   path: '/youtube/check-channels'
@@ -153,3 +161,4 @@ ish_drupal_module.youtube_check_channels:
     _controller: '\Drupal\ish_drupal_module\Controller\YoutubeController::check_channels'
   requirements:
     _access: 'TRUE'
+

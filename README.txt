@@ -16,4 +16,15 @@
   composer require --dev drupal/core-dev --update-with-all-dependencies
 
   phpunit --testsuite unit --filter CurrentUserBlock
-  ../vendor/bin/phpunit  -c ../phpunit.xml modules/ish_drupal_module/tests/src/Functional/CurrentUserBlockTest.php
+  ../vendor/bin/phpunit        -c ../phpunit.xml modules/ish_drupal_module/tests/src/Functional/CurrentUserBlockTest.php
+  ../../../vendor/bin/phpunit  -c ./phpunit.xml  tests/src/Functional/WorklogsControllerTest.php
+
+=== this test works ===
+
+  ./vendor/bin/phpunit -c phpunit.xml  -d memory_limit=1G web/modules/ish_drupal_module/tests/src/Functional/WorklogsControllerTest.php --debug
+
+  $response = $this->getSession()->getDriver()->getClient()->request('GET', '/worklogs/2025a', [], [], ['max_redirects' => 0]);
+  echo('+++ $response');
+  var_dump($response);
+
+
