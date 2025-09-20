@@ -29,16 +29,16 @@ class WorklogsControllerTest extends BrowserTestBase {
           'name' => 'Worklog',
       ])->save();
     }
-    if (!FieldStorageConfig::loadByName('node', 'field_date')) {
+    if (!FieldStorageConfig::loadByName('node', 'field_datestr')) {
       FieldStorageConfig::create([
-        'field_name' => 'field_date',
+        'field_name' => 'field_datestr',
         'entity_type' => 'node',
         'type' => 'string',
       ])->save();
     }
-    if (!FieldConfig::loadByName('node', 'worklog', 'field_date')) {
+    if (!FieldConfig::loadByName('node', 'worklog', 'field_datestr')) {
       FieldConfig::create([
-        'field_name' => 'field_date',
+        'field_name' => 'field_datestr',
         'entity_type' => 'node',
         'bundle' => 'worklog',
         'label' => 'Date',
@@ -57,7 +57,7 @@ class WorklogsControllerTest extends BrowserTestBase {
     $node = Node::create([
       'type' => 'worklog',
       'title' => 'Test Node 2025a',
-      'field_date' => '2025a',
+      'field_datestr' => '2025a',
       'status' => 1,
     ]);
     $node->save();

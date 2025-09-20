@@ -10,7 +10,7 @@ class WorklogsController extends ControllerBase {
 
   public function showRedirect($year) {
     $nids = \Drupal::entityQuery('node')
-      ->condition('field_date', $year)
+      ->condition('field_datestr', $year)
       ->range(0, 1)
       ->execute();
 
