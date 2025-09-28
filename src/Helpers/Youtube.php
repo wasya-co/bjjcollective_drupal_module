@@ -41,14 +41,14 @@ class Youtube {
 
       $youtube_id = $item->id->videoId;
       $youtube_title = Youtube::youtube_title($youtube_id);
-      $content_type = 'page_youtube';
+      $page_youtube = 'page_youtube';
 
       $outs = [];
 
       $issue_uuid = '35'; // '4ac9695b-0854-4972-8528-1f52e21d2235'; // taxonomy_term/35 :: 2024q1-issue
       $node_manager  = \Drupal::entityTypeManager()->getStorage('node');
       $existing = $node_manager->loadByProperties([
-        'type' => $content_type,
+        'type' => $page_youtube,
         'field_youtube_id' => $youtube_id,
       ]);
       if (!$existing) {
@@ -70,7 +70,7 @@ class Youtube {
           'field_issue' => [ 'target_id' => $issue_uuid ],
           'status' => 1,
           'title' => $youtube_title,
-          'type' => $content_type,
+          'type' => $page_youtube,
         ]);
         $new_item->save();
         \Drupal::messenger()->addMessage('Item From Youtube has been saved.');

@@ -122,6 +122,19 @@ ish_drupal_module.hiring_manager_dashboard:
   requirements:
     _role: 'hiring_manager'
 
+ish_drupal_module.tags_issue_show:
+  path: '/tags_issue/{slug}'
+  defaults:
+    _controller: '\Drupal\ish_drupal_module\Controller\TagsIssueController::show'
+  requirements:
+    _role: 'administrator'
+
+ish_drupal_module.tmp:
+  path: '/tmp'
+  defaults:
+    _controller: '\Drupal\ish_drupal_module\Controller\TmpController::tmp'
+  requirements:
+    _role: 'administrator'
 
 ish_drupal_module.users_dashboard:
   path: '/user/dashboard'

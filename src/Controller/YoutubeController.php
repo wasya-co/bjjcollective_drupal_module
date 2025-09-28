@@ -24,9 +24,10 @@ class YoutubeController extends ControllerBase {
   public function check_channels(Request $request) {
 
     $channel_ids = [
-      'tucker_carlson' => 'UCGttrUON87gWfU6dMWm1fcA',
-      'dr_campbell'    => 'UCF9IOB2TExg3QIBupFtBDxg',
-      'ivor_cummins'   => 'UCPn4FsiQP15nudug9FDhluA',
+      'tucker_carlson'   => 'UCGttrUON87gWfU6dMWm1fcA',
+      'dr_campbell'      => 'UCF9IOB2TExg3QIBupFtBDxg',
+      'ivor_cummins'     => 'UCPn4FsiQP15nudug9FDhluA',
+      'judge_napolitano' => 'UCDkEYb-TXJVWLvOokshtlsw',
     ];
     foreach($channel_ids as $key => $channel_id) {
       $outs  = Youtube::check_channel( $channel_id );
