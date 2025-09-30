@@ -167,11 +167,20 @@ ish_drupal_module.worklogs_redirect:
   options:
     no_cache: 'TRUE'
 
-ish_drupal_module.youtube_check_channels:
-  path: '/youtube/check-channels'
+ish_drupal_module.youtube_channels:
+  path: '/youtube_channels'
+  defaults:
+    _title: 'Youtube Channels'
+    _controller: '\Drupal\ish_drupal_module\Controller\YoutubeChannelsController::index'
+  requirements:
+    _access: 'TRUE'
+
+
+ish_drupal_module.youtube_channels_check:
+  path: '/youtube_channels/check'
   defaults:
     _title: 'Check Youtube Channels'
-    _controller: '\Drupal\ish_drupal_module\Controller\YoutubeController::check_channels'
+    _controller: '\Drupal\ish_drupal_module\Controller\YoutubeChannelsController::check'
   requirements:
     _access: 'TRUE'
 

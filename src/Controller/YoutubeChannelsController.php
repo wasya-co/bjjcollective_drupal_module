@@ -10,18 +10,17 @@ use Drupal\ish_drupal_module\Helpers\Youtube;
 
 
 /**
- * Youtube controller.
- *
- * the channels I want to check: tucker carlson, dr john campbell
  *
 **/
-class YoutubeController extends ControllerBase {
+class YoutubeChannelsController extends ControllerBase {
 
   /**
-   * Look at the last 5 videos. Each video, if I can find it by youtube_id, then skip it.
+   * the channels I want to check: tucker carlson, dr john campbell
+   *
+   * Look at the last n (5) videos. Each video, if I can find it by youtube_id, then skip it.
    *
   **/
-  public function check_channels(Request $request) {
+  public function check(Request $request) {
 
     $channel_ids = [
       'tucker_carlson'   => 'UCGttrUON87gWfU6dMWm1fcA',
@@ -34,8 +33,15 @@ class YoutubeController extends ControllerBase {
     }
 
     return [
-      '#theme' => 'youtube_check_channels',
+      '#theme' => 'youtube_channels_check',
       '#videos' => $outs,
+    ];
+  }
+
+  public function index(Request $request) {
+    return [
+      '#theme' => 'youtube_channels_index',
+      // '#videos' => $outs,
     ];
   }
 
