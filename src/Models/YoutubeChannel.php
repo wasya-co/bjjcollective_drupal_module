@@ -1,29 +1,60 @@
 <?php
 
-namespace Drupal\ish_drupal_module\Helpers;
+namespace Drupal\ish_drupal_module\Models;
 
-class Youtube {
 
-  public static function youtube_title(string $id) {
-    $config = \Drupal::config('ish_drupal_module.settings');
-    $api_key = $config->get('google_api_youtube_key');
+use Drupal\user\Entity\User;
 
-    $url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id='.$id.'&key='.$api_key;
-    $json = file_get_contents($url);
-    $decoded_json = json_decode($json, false);
-    // logg($decoded_json, '$decoded_json');
-    $title = $decoded_json->items[0]->snippet->title;
-    // logg($title, 'ze title');
-    return $title;
+
+/*
+ *
+**/
+class YoutubeChannel {
+
+  public $channel_id;
+  public $n_videos = 50;
+
+  public function __construct($channel_id) {
+    $this->channel_id = $channel_id;
   }
 
-  /**
+  /*
+   * creates a matching user. get the slug, lower case
+   * insert user $slug@youtube.com if doesn't exist
+   *
+  **/
+  public function afterCreate() {
+    $node_manager = \Drupal::entityTypeManager()->getStorage('node');
+    $thisChannel = $node_manager->loadByProperties([
+      'type' => 'youtube_channel',
+      'field_channel_id' => $this->channel_id,
+    ]);
+    $slug = $thisChannel->get('field_slug')->value;
+    $slug = strtolower(str_replace('@', '', $slug));
+
+    $uids = \Drupal::entityQuery('user')
+      ->condition('mail', $email)
+      ->execute();
+    if (empty($uids)) {
+      $length = 16;
+      $randomString = substr(bin2hex(random_bytes($length)), 0, $length);
+
+      $user = User::create([
+        // 'name' => $username,
+        'mail' => $slug . '@youtube.com',
+        'pass' => $randomString,
+        'status' => 1, // 1 = active
+      ]);
+      $user->save();
+      \Drupal::messenger()->addMessage('User created');
+    }
+  }
+
+  /*
    * https://stackoverflow.com/questions/18953499/youtube-api-to-fetch-all-videos-on-a-channel
    * https://www.googleapis.com/youtube/v3/search?key={your_key_here}&channelId={channel_id_here}&part=snippet,id&order=date&maxResults=5
-   * $channel_id = '@Campbellteaching';
-   * tucker carlson: UCGttrUON87gWfU6dMWm1fcA
   **/
-  public static function check_channel(string $channel_id) {
+  public static function check() {
     $user = \Drupal\user\Entity\User::load( 138 ); // content-donor
     $config = \Drupal::config('ish_drupal_module.settings');
     $api_key = $config->get('google_api_youtube_key');
@@ -82,6 +113,18 @@ class Youtube {
 
     // logg($outs, '$outs');
     return $outs;
+  }
+
+  public static function getPagesYoutube(&$build) {
+    if ('youtube_channel' == $build['uid']['#bundle'] && 'full' == $build['#view_mode']) {
+      // logg($build, 'getPagesYoutube');
+    }
+  }
+
+  public static function show(&$build) {
+    if ('youtube_channel' == $build['uid']['#bundle'] && 'full' == $build['#view_mode']) {
+      // logg($build, 'getPagesYoutube');
+    }
   }
 
 }

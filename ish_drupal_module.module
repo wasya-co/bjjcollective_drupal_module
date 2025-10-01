@@ -10,7 +10,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use Drupal\ish_drupal_module\Helpers\BjjcHelper;
 use Drupal\ish_drupal_module\Helpers\MainHelper;
-use Drupal\ish_drupal_module\Helpers\Youtube;
+use Drupal\ish_drupal_module\Controllers\YoutubeChannelCtrl;
+use Drupal\ish_drupal_module\Models\YoutubeVideo;
 
 function logg($object, $label=null) {
   print($label . ":");
@@ -33,10 +34,9 @@ function ish_drupal_module_cron() {
   $user = \Drupal\user\Entity\User::load( 138 ); // content-donor
   $config = \Drupal::config('ish_drupal_module.settings');
   $api_key = $config->get('google_api_youtube_key');
-  $youtube_channel = 'youtube_channel';
 
   $query = \Drupal::entityQuery('node')
-    ->condition('type', $youtube_channel)
+    ->condition('type', 'youtube_channel')
     ->exists('field_tags_issue')
     ->condition('field_tags_issue', NULL, 'IS NOT NULL')
     ->condition('status', 1); // is published
@@ -66,7 +66,7 @@ function ish_drupal_module_cron() {
 
       foreach($decoded_json->items as $item) {
         $youtube_id = $item->id->videoId;
-        $youtube_title = Youtube::youtube_title($youtube_id);
+        $youtube_title = YoutubeVideo::title($youtube_id);
         $page_youtube = 'page_youtube';
 
         $outs = [];
@@ -295,23 +295,23 @@ function ish_drupal_module_user_login_submit(&$form, $form_state) {
 
 
 /*
- *
+ * Alter render arrays (structural changes, fields, content).
 **/
 function ish_drupal_module_node_view(&$build) {
 
-  // For bjjcollective_com: related nodes for v2 type of video.
+  /* For bjjcollective_com: related nodes for v2 type of video. */
   BjjcHelper::computeRelatedVideos($build);
 
+  // YoutubeChannelCtrl::show($build);
+
+  // logg($build, 'final build');
 }
 
 /*
- * computes related_articles for Article only.
+ * Alter template variables (styling, theming context).
 **/
 function ish_drupal_module_preprocess_node(array &$variables) {
-  // var_dump( $variables['node']->hasField('field_tags_contrib') );
-
-  MainHelper::computeRelatedArticles($variables);
-
+  MainHelper::computeRelatedArticles($variables); // computes related_articles for Article only.
+  YoutubeChannelCtrl::show($variables);
   // $variables['my_custom_variable'] = 'Hello, this is my custom text!';
 }
-

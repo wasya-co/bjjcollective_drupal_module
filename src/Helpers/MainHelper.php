@@ -18,16 +18,18 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 **/
 class MainHelper {
 
-  public static function computeRelatedArticles(&$variables) {
-    if ($variables['node']->getType() === 'article') {
-      $node = $variables['node'];
+  public static function computeRelatedArticles(&$build) {
+    if ($build['node']->getType() === 'article') {
+      // logg($build, 'computeRelatedArticles - build');
+      $node = $build['node'];
+      // logg($node, 'node');
 
       if ($node->hasField('field_tags_contrib')) {
         $tag_ids = [];
         foreach ($node->get('field_tags_contrib')->referencedEntities() as $term) {
           $tag_ids[] = $term->id();
         }
-        // var_dump( $tag_ids );
+        // logg( $tag_ids, 'tag_ids' );
 
         if (!empty($tag_ids)) {
           $query = \Drupal::entityQuery('node')
@@ -41,7 +43,8 @@ class MainHelper {
           $nids = $query->execute();
 
           $related_articles = Node::loadMultiple($nids);
-          $variables['related_articles'] = $related_articles;
+          // logg($related_articles, '$related_articles');
+          $build['related_articles'] = $related_articles;
         }
       }
     }
