@@ -175,12 +175,21 @@ ish_drupal_module.youtube_channels:
   requirements:
     _access: 'TRUE'
 
+ish_drupal_module.youtube_channels_after_create:
+  defaults:
+    _controller: '\Drupal\ish_drupal_module\Controller\YoutubeChannelsController::afterCreate'
+    _title: 'Youtube Channels :: afterCreate'
+  methods: [POST]
+  path: '/youtube_channels/after_create'
+  requirements:
+    _role: 'administrator'
+
 
 ish_drupal_module.youtube_channels_check:
-  path: '/youtube_channels/check'
   defaults:
-    _title: 'Check Youtube Channels'
     _controller: '\Drupal\ish_drupal_module\Controller\YoutubeChannelsController::check'
+    _title: 'Check Youtube Channels'
+  path: '/youtube_channels/check'
   requirements:
     _access: 'TRUE'
 

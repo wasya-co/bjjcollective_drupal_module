@@ -8,6 +8,8 @@ use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+use Drupal\ish_drupal_module\Migrations;
+use Drupal\ish_drupal_module\Helpers\MainHelper;
 use Drupal\ish_drupal_module\Helpers\Youtube;
 
 function logg($object, $label=null) {
@@ -54,7 +56,7 @@ function ish_drupal_module_cron() {
     $last_polled_at = $youtube_channel->get('field_last_polled_at')->value;
     if (!$last_polled_at || strtotime($last_polled_at) < time() - 86400) {
 
-      $n_videos = 4;
+      $n_videos = 50;
       $url = 'https://www.googleapis.com/youtube/v3/search?key='.$api_key.'&channelId='.$channel_id.'&part=snippet,id&order=date&maxResults='.$n_videos.'&videoDuration=long&type=video';
       // logg($url, '$url');
 
@@ -108,6 +110,9 @@ function ish_drupal_module_cron() {
 
 }
 
+/*
+ * renders a different form_display for aphorisms (old, not tested)
+**/
 function ish_drupal_module_entity_form_display_alter(Drupal\Core\Entity\Entity\EntityFormDisplay &$form_display, array $context) {
   if (in_array('authenticated', \Drupal::currentUser()->getRoles()) &&
       $context['entity_type'] === 'node' &&
@@ -120,7 +125,9 @@ function ish_drupal_module_entity_form_display_alter(Drupal\Core\Entity\Entity\E
   }
 }
 
-
+/*
+ * trash, remove?! 2025-10-01
+**/
 function ish_drupal_module_entity_type_build(array &$entity_types) {
   $entity_types['node']->setFormClass('for_youtube', 'Drupal\node\NodeForm');
   // $entity_types['node']->setFormClass('for_youtube', 'ForYoutube');
@@ -136,7 +143,7 @@ function ish_drupal_module_form_user_login_form_alter(&$form, $form_state) {
 }
 
 
-/**
+/*
  * Implements hook_theme().
  *
  * See: https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Render%21theme.api.php/function/hook_theme/8.2.x
@@ -267,7 +274,9 @@ function ish_drupal_module_theme($existing, $type, $theme, $path) {
 
 }
 
-
+/*
+ * login redirects to dashboard
+**/
 function ish_drupal_module_user_login_submit(&$form, $form_state) {
   $dashboard_url = Url::fromRoute('ish_drupal_module.users_dashboard');
   $dance_instructor_dashboard_url = Url::fromRoute('ish_drupal_module.dance_instructor_dashboard');
@@ -285,8 +294,8 @@ function ish_drupal_module_user_login_submit(&$form, $form_state) {
 
 
 
-/* For bjjcollective_com: related nodes for v2 type of video.
- *
+/*
+ * For bjjcollective_com: related nodes for v2 type of video.
 **/
 function ish_drupal_module_node_view(&$build) {
   if ('v2' == $build['uid']['#bundle'] && 'full' == $build['#view_mode']) {
@@ -307,90 +316,14 @@ function ish_drupal_module_node_view(&$build) {
   }
 }
 
-
+/*
+ * computes related_articles for Article only.
+**/
 function ish_drupal_module_preprocess_node(array &$variables) {
   // var_dump( $variables['node']->hasField('field_tags_contrib') );
 
-  if ($variables['node']->getType() === 'article') {
-    $node = $variables['node'];
+  MainHelper::computeRelatedArticles($variables);
 
-    if ($node->hasField('field_tags_contrib')) {
-      $tag_ids = [];
-      foreach ($node->get('field_tags_contrib')->referencedEntities() as $term) {
-        $tag_ids[] = $term->id();
-      }
-      // var_dump( $tag_ids );
-
-      if (!empty($tag_ids)) {
-        $query = \Drupal::entityQuery('node')
-          ->condition('type', 'article')
-          ->condition('status', 1) // only published
-          ->condition('nid', $node->id(), '<>') // exclude current node
-          ->condition('field_tags_contrib.target_id', $tag_ids, 'IN')
-          ->sort('created', 'DESC')
-          ->range(0, 4);
-
-        $nids = $query->execute();
-
-        $related_articles = Node::loadMultiple($nids);
-        $variables['related_articles'] = $related_articles;
-      }
-    }
-    // $variables['my_custom_variable'] = 'Hello, this is my custom text!';
-  }
+  // $variables['my_custom_variable'] = 'Hello, this is my custom text!';
 }
 
-/*
- * for piousbox_com as a magazine
- * adds field_last_polled_at to youtube_channel
-**/
-function ish_drupal_module_update_9001() {
-  $content_type = 'youtube_channel';
-  $field_name = 'field_last_polled_at';
-
-  if (!FieldStorageConfig::loadByName('node', $field_name)) {
-    FieldStorageConfig::create([
-      'field_name' => $field_name,
-      'entity_type' => 'node',
-      'type' => 'string',
-      'settings' => [
-        'max_length' => 255,
-      ],
-      'cardinality' => 1,
-      'translatable' => TRUE,
-    ])->save();
-  }
-  if (!FieldConfig::loadByName('node', $content_type, $field_name)) {
-    FieldConfig::create([
-      'field_name' => $field_name,
-      'entity_type' => 'node',
-      'bundle' => $content_type,
-      'label' => $field_name,
-      'description' => $field_name,
-      'required' => FALSE,
-      'settings' => [],
-    ])->save();
-  }
-}
-
-/**
- * Migrate article values from field_tag_contrib to field_tags_contrib.
-**/
-function ish_drupal_module_update_9002() {
-  $nids = \Drupal::entityQuery('node')
-    ->condition('type', 'article')
-    ->execute();
-
-  $nodes = Node::loadMultiple($nids);
-
-  foreach ($nodes as $node) {
-    if ($node->hasField('field_tag_contrib') && $node->hasField('field_tags_contrib')) {
-      $old_values = $node->get('field_tag_contrib')->getValue();
-      $node->set('field_tags_contrib', $old_values);
-      $node->set('field_tag_contrib', []);
-      $node->save();
-    }
-  }
-
-  \Drupal::messenger()->addMessage('Migrated field_tag_contrib values to field_tags_contrib.');
-}
