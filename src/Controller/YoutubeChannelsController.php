@@ -4,6 +4,7 @@ namespace Drupal\ish_drupal_module\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\node\Entity\Node;
+use Drupal\user\Entity\User;
 use Drupal\node\NodeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,18 +18,30 @@ class YoutubeChannelsController extends ControllerBase {
 
 
   /*
-   *
+   * 2025-10-02 This is used!
   **/
   public function check(Request $request) {
-
-    $n_videos = 50;
-    $user = \Drupal\user\Entity\User::load( 138 ); // content-donor
+    $n_videos = 4;
     $config = \Drupal::config('ish_drupal_module.settings');
     $api_key = $config->get('google_api_youtube_key');
 
     $node_manager  = \Drupal::entityTypeManager()->getStorage('node');
     $youtube_channel = Node::load($request->attributes->get('node'));
     $channel_id = $youtube_channel->get('field_channel_id')->value;
+
+    // user
+    $query = \Drupal::entityQuery('user')
+      ->condition('field_channel_id', $channel_id)
+      ->range(0, 1);
+    $uids = $query->execute();
+    if (!empty($uids)) {
+      $uid = reset($uids);
+    } else {
+      $uid = 138; // content-donor
+    }
+    $user = User::load($uid);
+
+
     $tags_contrib_ids = $youtube_channel->get('field_tags_contrib')->getValue();
     $tags_contrib_ids = array_column($tags_contrib_ids, 'target_id');
     $tags_issue_ids = $youtube_channel->get('field_tags_issue')->getValue();
@@ -38,7 +51,7 @@ class YoutubeChannelsController extends ControllerBase {
     // logg($url, '$url');
     $json = file_get_contents($url);
     $decoded_json = json_decode($json, false);
-    // logg($decoded_json, '$decoded_json');
+    logg($decoded_json, '$decoded_json');
     foreach($decoded_json->items as $item) {
 
       $youtube_id = $item->id->videoId;
@@ -47,6 +60,7 @@ class YoutubeChannelsController extends ControllerBase {
       $existing_page_youtube = $node_manager->loadByProperties([
         'type' => 'page_youtube',
         'field_youtube_id' => $youtube_id,
+        'field_channel_id' => $channel_id,
       ]);
       if (!$existing_page_youtube) {
         $outs[ $item->id->videoId ] = $youtube_title;
@@ -56,7 +70,7 @@ class YoutubeChannelsController extends ControllerBase {
             allowfullscreen></iframe>
         AOL;
         $new_item = $node_manager->create([
-          'author' => $user,
+          'uid' => $user->id(),
           'body' => [
             'value' => $body,
             'format' => 'full_html',

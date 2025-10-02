@@ -2,6 +2,7 @@
 
 namespace Drupal\ish_drupal_module\Controllers;
 
+use Drupal\node\Entity\Node;
 use Drupal\user\Entity\User;
 
 use Drupal\ish_drupal_module\Models\YoutubeChannel;
@@ -14,10 +15,16 @@ use Drupal\ish_drupal_module\Models\YoutubeChannel;
 **/
 class YoutubeChannelCtrl {
 
+  public $node_manager;
+
+  public function __construct() {
+    $this->node_manager  = \Drupal::entityTypeManager()->getStorage('node');
+  }
+
   /*
-   * @TODO: not implemented, not tested
+   * @TODO: NOT USED.
   **/
-  /* public function check() {
+  public function check() {
     $user = \Drupal\user\Entity\User::load( 138 ); // content-donor
     $config = \Drupal::config('ish_drupal_module.settings');
     $api_key = $config->get('google_api_youtube_key');
@@ -75,23 +82,41 @@ class YoutubeChannelCtrl {
 
     // logg($outs, '$outs');
     return $outs;
-  } */
+  }
 
-
-  public function getPagesYoutube(&$build) {
+  /* public function getPagesYoutube(&$build) {
     if ('youtube_channel' == $build['uid']['#bundle'] && 'full' == $build['#view_mode']) {
       // logg($build, 'getPagesYoutube');
     }
-  }
+  } */
 
   public static function show(&$vars) {
     if ('youtube_channel' == $vars['node']->getType() && 'full' == $vars['view_mode']) {
-      // logg($vars, '#show');
+      // logg($vars, 'youtube_channel#show');
+      $node = $vars['node'];
+      $vars['channel_id'] = $node->get('field_channel_id')->value;
 
-      $rendered_form = \Drupal::formBuilder()->getForm('Drupal\ish_drupal_module\Form\YoutubeChannelsCheckButton', $vars['node']->id() );
-      // logg($rendered_form, '$rendered_form');
+      // $rendered_form = \Drupal::formBuilder()->getForm('Drupal\ish_drupal_module\Form\YoutubeChannelsCheckButton', $vars['node']->id() );
+      // $vars['youtube_channels_check_button'] = $rendered_form;
+      //
+      // $url = Url::fromRoute('ish_drupal_module.youtube_channels_check');
+      // $link = Link::fromTextAndUrl('Go to Example', $url)->toString();
 
-      $vars['youtube_channels_check_button'] = $rendered_form;
+      // logg($node->get('field_channel_id')->value, 'channel id');
+
+      $query = \Drupal::entityQuery('node')
+        ->condition('type', 'page_youtube')
+        ->condition('field_channel_id', $node->get('field_channel_id')->value )
+        ->accessCheck(TRUE);
+      $nids = $query->execute();
+      $pages_youtube = Node::loadMultiple($nids);
+      // logg($pages_youtube, '$pages_youtube');
+      $view_builder = \Drupal::entityTypeManager()->getViewBuilder('node');
+      $render_pages_youtube = [];
+      foreach ($pages_youtube as $page_youtube) {
+        $render_pages_youtube[] = $view_builder->view($page_youtube, 'teaser');
+      }
+      $vars['pages_youtube'] = $render_pages_youtube;
     }
   }
 

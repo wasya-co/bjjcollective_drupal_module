@@ -188,7 +188,7 @@ ish_drupal_module.youtube_channels:
 ish_drupal_module.youtube_channels_check:
   defaults:
     _controller: '\Drupal\ish_drupal_module\Controller\YoutubeChannelsController::check'
-    _title: 'Check Youtube Channels'
+    _title: 'Youtube Channel :: Check'
   path: '/youtube_channels/{node}/check'
   requirements:
     _access: 'TRUE'

@@ -30,8 +30,7 @@ function puts($object, $label=null) {
  * for piousbox_com as a magazine
 **/
 function ish_drupal_module_cron() {
-
-  $user = \Drupal\user\Entity\User::load( 138 ); // content-donor
+  // $user = \Drupal\user\Entity\User::load( 138 ); // content-donor
   $config = \Drupal::config('ish_drupal_module.settings');
   $api_key = $config->get('google_api_youtube_key');
 
@@ -50,13 +49,13 @@ function ish_drupal_module_cron() {
     $tags_issue_ids = array_column($tags_issue_ids, 'target_id');
     // logg($tags_issue_ids, '$tags_issue_ids');
 
-    $channel_id     = $youtube_channel->get('field_channel_id'    )->value;
+    $channel_id     = $youtube_channel->get('field_channel_id')->value;
     // logg($channel_id, 'channel_id');
 
     $last_polled_at = $youtube_channel->get('field_last_polled_at')->value;
     if (!$last_polled_at || strtotime($last_polled_at) < time() - 86400) {
 
-      $n_videos = 50;
+      $n_videos = 10;
       $url = 'https://www.googleapis.com/youtube/v3/search?key='.$api_key.'&channelId='.$channel_id.'&part=snippet,id&order=date&maxResults='.$n_videos.'&videoDuration=long&type=video';
       // logg($url, '$url');
 
@@ -64,17 +63,28 @@ function ish_drupal_module_cron() {
       $decoded_json = json_decode($json, false);
       // logg($decoded_json, '$decoded_json');
 
+      /* user */
+      $query = \Drupal::entityQuery('user')
+        ->condition('field_channel_id', $channel_id)
+        ->range(0, 1);
+      $uids = $query->execute();
+      if (!empty($uids)) {
+        $uid = reset($uids);
+      } else {
+        $uid = 138; // content-donor
+      }
+      $user = User::load($uid);
+
       foreach($decoded_json->items as $item) {
         $youtube_id = $item->id->videoId;
         $youtube_title = YoutubeVideo::title($youtube_id);
-        $page_youtube = 'page_youtube';
 
         $outs = [];
 
         // $issue_uuid = '35'; // '4ac9695b-0854-4972-8528-1f52e21d2235'; // taxonomy_term/35 :: 2024q1-issue
         $node_manager  = \Drupal::entityTypeManager()->getStorage('node');
         $existing_page_youtube = $node_manager->loadByProperties([
-          'type' => $page_youtube,
+          'type' => 'page_youtube',
           'field_youtube_id' => $youtube_id,
         ]);
         if (!$existing_page_youtube) {
@@ -87,7 +97,7 @@ function ish_drupal_module_cron() {
           AOL;
 
           $new_item = $node_manager->create([
-            'author' => $user,
+            'uid' => $user->id(),
             'body' => [
               'value' => $body,
               'format' => 'full_html',
@@ -298,7 +308,6 @@ function ish_drupal_module_user_login_submit(&$form, $form_state) {
  * Alter render arrays (structural changes, fields, content).
 **/
 function ish_drupal_module_node_view(&$build) {
-
   /* For bjjcollective_com: related nodes for v2 type of video. */
   BjjcHelper::computeRelatedVideos($build);
 

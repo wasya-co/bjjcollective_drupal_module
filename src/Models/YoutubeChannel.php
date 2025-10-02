@@ -2,7 +2,7 @@
 
 namespace Drupal\ish_drupal_module\Models;
 
-
+use Drupal\node\Entity\Node;
 use Drupal\user\Entity\User;
 
 
@@ -12,10 +12,12 @@ use Drupal\user\Entity\User;
 class YoutubeChannel {
 
   public $channel_id;
-  public $n_videos = 50;
+  public $node;
+  public $node_manager;
 
-  public function __construct($channel_id) {
-    $this->channel_id = $channel_id;
+  public function __construct($nid) {
+    $this->node_manager = \Drupal::entityTypeManager()->getStorage('node');
+    $this->node = Node::load($nid);
   }
 
   /*
@@ -24,29 +26,24 @@ class YoutubeChannel {
    *
   **/
   public function afterCreate() {
-    $node_manager = \Drupal::entityTypeManager()->getStorage('node');
-    $thisChannel = $node_manager->loadByProperties([
-      'type' => 'youtube_channel',
-      'field_channel_id' => $this->channel_id,
-    ]);
-    $slug = $thisChannel->get('field_slug')->value;
+    $slug = $this->node->get('field_slug')->value;
     $slug = strtolower(str_replace('@', '', $slug));
 
     $uids = \Drupal::entityQuery('user')
-      ->condition('mail', $email)
+      ->condition('field_channel_id', $this->channel_id)
       ->execute();
     if (empty($uids)) {
       $length = 16;
       $randomString = substr(bin2hex(random_bytes($length)), 0, $length);
 
       $user = User::create([
-        // 'name' => $username,
         'mail' => $slug . '@youtube.com',
         'pass' => $randomString,
         'status' => 1, // 1 = active
+        'field_channel_id' => $this->node->get('field_channel_id')->value,
       ]);
       $user->save();
-      \Drupal::messenger()->addMessage('User created');
+      \Drupal::messenger()->addMessage('User '. $slug .' created');
     }
   }
 
@@ -106,25 +103,8 @@ class YoutubeChannel {
         $new_item->save();
         \Drupal::messenger()->addMessage('Item From Youtube has been saved.');
       }
-
-      // $title = $decoded_json->items[0]->snippet->title;
-      // logg($title, 'ze title');
     }
-
-    // logg($outs, '$outs');
     return $outs;
-  }
-
-  public static function getPagesYoutube(&$build) {
-    if ('youtube_channel' == $build['uid']['#bundle'] && 'full' == $build['#view_mode']) {
-      // logg($build, 'getPagesYoutube');
-    }
-  }
-
-  public static function show(&$build) {
-    if ('youtube_channel' == $build['uid']['#bundle'] && 'full' == $build['#view_mode']) {
-      // logg($build, 'getPagesYoutube');
-    }
   }
 
 }
