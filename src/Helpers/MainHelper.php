@@ -39,7 +39,7 @@ class MainHelper {
             ->condition('nid', $node->id(), '<>') // exclude current node
             ->condition('field_tags_contrib.target_id', $tag_ids, 'IN')
             ->sort('created', 'DESC')
-            ->range(0, 4);
+            ->range(0, 6);
 
           $nids = $query->execute();
 
