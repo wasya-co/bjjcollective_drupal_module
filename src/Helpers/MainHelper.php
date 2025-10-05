@@ -21,6 +21,7 @@ class MainHelper {
   public static function computeRelatedArticles(&$build) {
     if ($build['node']->getType() === 'article') {
       // logg($build, 'computeRelatedArticles - build');
+
       $node = $build['node'];
       // logg($node, 'node');
 
