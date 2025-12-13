@@ -30,7 +30,7 @@ function puts($object, $label=null) {
 /*
  * for piousbox_com as a magazine
 **/
-function ish_drupal_module_cron() {
+/* function ish_drupal_module_cron() {
   // $user = \Drupal\user\Entity\User::load( 138 ); // content-donor
   $config = \Drupal::config('ish_drupal_module.settings');
   $api_key = $config->get('google_api_youtube_key');
@@ -64,7 +64,7 @@ function ish_drupal_module_cron() {
       $decoded_json = json_decode($json, false);
       // logg($decoded_json, '$decoded_json');
 
-      /* user */
+      // user
       $query = \Drupal::entityQuery('user')
         ->condition('field_channel_id', $channel_id)
         ->range(0, 1);
@@ -119,7 +119,7 @@ function ish_drupal_module_cron() {
     }
   }
 
-}
+} // */
 
 /*
  * renders a different form_display for aphorisms (old, not tested)
@@ -325,3 +325,11 @@ function ish_drupal_module_preprocess_node(array &$variables) {
   YoutubeChannelCtrl::show($variables);
   // $variables['my_custom_variable'] = 'Hello, this is my custom text!';
 }
+
+// doesn't work:
+/* function ish_drupal_module_form_simplenews_block_form_alter(&$form, FormStateInterface $form_state) {
+  $form['captcha'] = [
+    '#type' => 'captcha',
+    '#captcha_type' => 'recaptcha',
+  ];
+} */

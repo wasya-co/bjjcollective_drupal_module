@@ -29,7 +29,7 @@ class YoutubeChannelsController extends ControllerBase {
     $youtube_channel = Node::load($request->attributes->get('node'));
     $channel_id = $youtube_channel->get('field_channel_id')->value;
 
-    // user
+    /* user */
     $query = \Drupal::entityQuery('user')
       ->condition('field_channel_id', $channel_id)
       ->range(0, 1);
