@@ -30,11 +30,12 @@ function puts($object, $label=null) {
 /*
  * for piousbox_com as a magazine
 **/
-/* function ish_drupal_module_cron() {
+function ish_drupal_module_cron() {
   // $user = \Drupal\user\Entity\User::load( 138 ); // content-donor
   $config = \Drupal::config('ish_drupal_module.settings');
   $api_key = $config->get('google_api_youtube_key');
 
+  // this finds channels attached to each issue *block*, and puts page_youtube's into each block. _vp_ 2025-12-17
   $query = \Drupal::entityQuery('node')
     ->condition('type', 'youtube_channel')
     ->exists('field_tags_issue')
@@ -223,6 +224,14 @@ function ish_drupal_module_theme($existing, $type, $theme, $path) {
       'template' => 'my_feed',
       'variables' => [
         'test_var_1' => null,
+      ],
+    ],
+
+    'scrape_zerohedge_one' => [
+      'render element' => 'children',
+      'template' => 'one',
+      'path' => $path . '/templates/scrape_zerohedge',
+      'variables' => [
       ],
     ],
 
