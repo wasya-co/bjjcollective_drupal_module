@@ -31,6 +31,8 @@ function puts($object, $label=null) {
  * for piousbox_com as a magazine
 **/
 function ish_drupal_module_cron() {
+  $youtube_queue = \Drupal::queue('youtube_queue');
+
   // $user = \Drupal\user\Entity\User::load( 138 ); // content-donor
   $config = \Drupal::config('ish_drupal_module.settings');
   $api_key = $config->get('google_api_youtube_key');
@@ -227,6 +229,14 @@ function ish_drupal_module_theme($existing, $type, $theme, $path) {
       ],
     ],
 
+    'scrape_zerohedge_all' => [
+      'render element' => 'children',
+      'template' => 'all',
+      'path' => $path . '/templates/scrape_zerohedge',
+      'variables' => [
+        'contents' => 'no contents',
+      ],
+    ],
     'scrape_zerohedge_one' => [
       'render element' => 'children',
       'template' => 'one',
@@ -280,6 +290,9 @@ function ish_drupal_module_theme($existing, $type, $theme, $path) {
       'template' => 'check',
       'path' => $path . '/templates/youtube_channels',
       'variables' => [
+        'abba' => 'default a',
+        'decoded_json' => 'no decoded_json',
+        'outs' => [ 'no outs' ],
       ],
     ],
     'youtube_channels_index' => [

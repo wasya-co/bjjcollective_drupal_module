@@ -21,13 +21,13 @@ class YoutubeChannelsController extends ControllerBase {
    * 2025-10-02 This is used!
   **/
   public function check(Request $request) {
-    $n_videos = 4;
+    $n_videos = 6;
     $config = \Drupal::config('ish_drupal_module.settings');
     $api_key = $config->get('google_api_youtube_key');
 
-    $node_manager  = \Drupal::entityTypeManager()->getStorage('node');
+    $node_manager    = \Drupal::entityTypeManager()->getStorage('node');
     $youtube_channel = Node::load($request->attributes->get('node'));
-    $channel_id = $youtube_channel->get('field_channel_id')->value;
+    $channel_id      = $youtube_channel->get('field_channel_id')->value;
 
     /* user */
     $query = \Drupal::entityQuery('user')
@@ -44,14 +44,14 @@ class YoutubeChannelsController extends ControllerBase {
 
     $tags_contrib_ids = $youtube_channel->get('field_tags_contrib')->getValue();
     $tags_contrib_ids = array_column($tags_contrib_ids, 'target_id');
-    $tags_issue_ids = $youtube_channel->get('field_tags_issue')->getValue();
-    $tags_issue_ids = array_column($tags_issue_ids, 'target_id');
+    $tags_issue_ids   = $youtube_channel->get('field_tags_issue')->getValue();
+    $tags_issue_ids   = array_column($tags_issue_ids, 'target_id');
 
     $url = 'https://www.googleapis.com/youtube/v3/search?key='.$api_key.'&channelId='.$channel_id.'&part=snippet,id&order=date&maxResults='.$n_videos.'&videoDuration=long&type=video';
     // logg($url, '$url');
     $json = file_get_contents($url);
     $decoded_json = json_decode($json, false);
-    logg($decoded_json, '$decoded_json');
+    // logg($decoded_json, '$decoded_json');
     foreach($decoded_json->items as $item) {
 
       $youtube_id = $item->id->videoId;
@@ -62,6 +62,8 @@ class YoutubeChannelsController extends ControllerBase {
         'field_youtube_id' => $youtube_id,
         'field_channel_id' => $channel_id,
       ]);
+
+      $outs = [];
       if (!$existing_page_youtube) {
         $outs[ $item->id->videoId ] = $youtube_title;
         $body = <<<AOL
@@ -84,11 +86,15 @@ class YoutubeChannelsController extends ControllerBase {
           'type' => 'page_youtube',
         ]);
         $new_item->save();
+        array_push($outs, $youtube_title);
         \Drupal::messenger()->addMessage('Item From Youtube has been saved.');
       }
     }
     return [
       '#theme' => 'youtube_channels_check',
+      '#decoded_json' => $json,
+      '#outs' => $outs,
+      '#abba' => 'given abba',
     ];
   }
 

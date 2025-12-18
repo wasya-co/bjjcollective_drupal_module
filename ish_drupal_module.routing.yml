@@ -122,6 +122,14 @@ ish_drupal_module.hiring_manager_dashboard:
   requirements:
     _role: 'hiring_manager'
 
+ish_drupal_module.scrape_zerohedge_all:
+  path: '/scrape/zerohedge/all'
+  defaults:
+    _controller: '\Drupal\ish_drupal_module\Controller\ScrapeZerohedgeController::all'
+  requirements:
+    _role: 'administrator'
+
+
 ish_drupal_module.scrape_zerohedge_one:
   path: '/scrape/zerohedge/one'
   defaults:
@@ -198,5 +206,5 @@ ish_drupal_module.youtube_channels_check:
     _title: 'Youtube Channel :: Check'
   path: '/youtube_channels/{node}/check'
   requirements:
-    _access: 'TRUE'
+    _role: 'administrator'
 
