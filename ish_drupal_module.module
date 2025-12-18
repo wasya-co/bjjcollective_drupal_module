@@ -31,7 +31,7 @@ function puts($object, $label=null) {
  * for piousbox_com as a magazine
 **/
 function ish_drupal_module_cron() {
-  $youtube_queue = \Drupal::queue('youtube_queue');
+  // $youtube_queue = \Drupal::queue('youtube_queue');
 
   // $user = \Drupal\user\Entity\User::load( 138 ); // content-donor
   $config = \Drupal::config('ish_drupal_module.settings');
