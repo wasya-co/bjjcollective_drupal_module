@@ -17,6 +17,9 @@ class ScrapeZerohedgeController extends ControllerBase {
     $build = [
       '#theme' => 'scrape_zerohedge_all',
       '#contents' => $contents,
+      '#cache' => [
+        'max-age' => 0, // no caching
+      ],
     ];
     return $build;
   }
