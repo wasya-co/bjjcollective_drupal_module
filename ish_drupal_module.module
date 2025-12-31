@@ -31,9 +31,10 @@ function puts($object, $label=null) {
  * for piousbox_com as a magazine
 **/
 function ish_drupal_module_cron() {
+  \Drupal::logger('ish_drupal_module')->notice('Starting cron...');
   // $youtube_queue = \Drupal::queue('youtube_queue');
 
-  // $user = \Drupal\user\Entity\User::load( 138 ); // content-donor
+  // $user = \Drupal\user\Entity\User::load( 138 ); // content-donor on piousbox_com
   $config = \Drupal::config('ish_drupal_module.settings');
   $api_key = $config->get('google_api_youtube_key');
 
@@ -111,7 +112,7 @@ function ish_drupal_module_cron() {
             'field_tags_issue' => $tags_issue_ids,
             'status' => 1, // is published
             'title' => $youtube_title,
-            'type' => $page_youtube,
+            'type' => 'page_youtube',
           ]);
           $new_item->save();
           \Drupal::messenger()->addMessage('Item From Youtube has been saved.');
