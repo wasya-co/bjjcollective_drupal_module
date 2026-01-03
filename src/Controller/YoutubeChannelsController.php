@@ -29,7 +29,7 @@ class YoutubeChannelsController extends ControllerBase {
 
     return [
       '#theme' => 'youtube_channels_check',
-      '#decoded_json' => $json,
+      // '#decoded_json' => $json,
       '#abba' => 'given abba',
     ];
   }
