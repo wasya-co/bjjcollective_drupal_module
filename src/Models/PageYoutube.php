@@ -20,7 +20,7 @@ class PageYoutube {
 
     // $user = \Drupal\user\Entity\User::load( 138 ); // content-donor on piousbox_com
 
-    // this finds channels attached to each issue *block*, and puts page_youtube's into each block. _vp_ 2025-12-17
+    // Find channels attached to each issue *block*, and put page_youtube's into each block. _vp_ 2025-12-17
     $query = \Drupal::entityQuery('node')
       ->condition('type', 'youtube_channel')
       ->exists('field_tags_issue')
