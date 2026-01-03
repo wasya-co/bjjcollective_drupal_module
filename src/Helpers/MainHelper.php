@@ -33,13 +33,15 @@ class MainHelper {
         // logg( $tag_ids, 'tag_ids' );
 
         if (!empty($tag_ids)) {
+          $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
           $query = \Drupal::entityQuery('node')
             ->condition('type', 'article')
             ->condition('status', 1) // only published
             ->condition('nid', $node->id(), '<>') // exclude current node
             ->condition('field_tags_contrib.target_id', $tag_ids, 'IN')
+            ->condition('langcode', $langcode)
             ->sort('created', 'DESC')
-            ->range(0, 6);
+            ->range(0, 3);
 
           $nids = $query->execute();
 
