@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\ish_drupal_modle\Plugin\QueueWorker;
+namespace Drupal\ish_drupal_module\Plugin\QueueWorker;
 
 use Drupal\Core\Queue\QueueWorkerBase;
 
