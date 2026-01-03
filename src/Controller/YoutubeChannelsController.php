@@ -44,6 +44,8 @@ class YoutubeChannelsController extends ControllerBase {
     $outs = [];
 
     foreach($decoded_json->items as $item) {
+      logg($item, '$item');
+
       $youtube_id = $item->id->videoId;
       $youtube_title = YoutubeVideo::title($youtube_id);
 
@@ -78,6 +80,7 @@ class YoutubeChannelsController extends ControllerBase {
           'type' => 'page_youtube',
         ]);
         $new_item->save();
+        logg($new_item, '$new_item');
         \Drupal::messenger()->addMessage('Item From Youtube has been saved.');
       }
     }
