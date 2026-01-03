@@ -63,13 +63,7 @@ function ish_drupal_module_entity_type_build(array &$entity_types) {
 }
 
 
-/* Redirect user on login.
- * From: https://drupal.stackexchange.com/questions/195170/redirect-after-user-login
- * Works!
-**/
-function ish_drupal_module_form_user_login_form_alter(&$form, $form_state) {
-  $form['#submit'][] = 'ish_drupal_module_user_login_submit';
-}
+
 
 
 /*
@@ -222,22 +216,29 @@ function ish_drupal_module_theme($existing, $type, $theme, $path) {
 
 }
 
+/* Redirect user on login.
+ * From: https://drupal.stackexchange.com/questions/195170/redirect-after-user-login
+ * Works?!
+**/
+// function ish_drupal_module_form_user_login_form_alter(&$form, $form_state) {
+//   $form['#submit'][] = 'ish_drupal_module_user_login_submit';
+// }
 /*
  * login redirects to dashboard
 **/
-function ish_drupal_module_user_login_submit(&$form, $form_state) {
-  $dashboard_url = Url::fromRoute('ish_drupal_module.users_dashboard');
-  $dance_instructor_dashboard_url = Url::fromRoute('ish_drupal_module.dance_instructor_dashboard');
-  // Check if a destination was set, probably on an exception controller.
-  // @see \Drupal\user\Form\UserLoginForm::submitForm()
-  $request = \Drupal::service('request_stack')->getCurrentRequest();
-  if (!$request->request->has('destination')) {
-    $form_state->setRedirectUrl($dashboard_url);
-  }
-  else {
-    $request->query->set('destination', $request->request->get('destination'));
-  }
-}
+// function ish_drupal_module_user_login_submit(&$form, $form_state) {
+//   $dashboard_url = Url::fromRoute('ish_drupal_module.users_dashboard');
+//   $dance_instructor_dashboard_url = Url::fromRoute('ish_drupal_module.dance_instructor_dashboard');
+//   // Check if a destination was set, probably on an exception controller.
+//   // @see \Drupal\user\Form\UserLoginForm::submitForm()
+//   $request = \Drupal::service('request_stack')->getCurrentRequest();
+//   if (!$request->request->has('destination')) {
+//     $form_state->setRedirectUrl($dashboard_url);
+//   }
+//   else {
+//     $request->query->set('destination', $request->request->get('destination'));
+//   }
+// }
 
 
 
@@ -263,10 +264,3 @@ function ish_drupal_module_preprocess_node(array &$variables) {
   // $variables['my_custom_variable'] = 'Hello, this is my custom text!';
 }
 
-// doesn't work:
-/* function ish_drupal_module_form_simplenews_block_form_alter(&$form, FormStateInterface $form_state) {
-  $form['captcha'] = [
-    '#type' => 'captcha',
-    '#captcha_type' => 'recaptcha',
-  ];
-} */
