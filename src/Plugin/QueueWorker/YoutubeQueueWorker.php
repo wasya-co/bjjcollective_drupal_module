@@ -74,9 +74,11 @@ class YoutubeQueueWorker extends QueueWorkerBase {
           $outs[ $item->id->videoId ] = $youtube_title;
 
           $body = <<<AOL
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/$youtube_id" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write;
-              encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen></iframe>
+            <div class="embed-responsive embed-responsive-16by9">
+              <iframe class='embed-responsive-item' src="https://www.youtube.com/embed/$youtube_id" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write;
+                encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen></iframe>
+            </div>
           AOL;
 
           $new_item = $node_manager->create([
