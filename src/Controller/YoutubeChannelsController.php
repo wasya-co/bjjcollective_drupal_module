@@ -33,8 +33,7 @@ class YoutubeChannelsController extends ControllerBase {
 
     $channel_id     = $youtube_channel->get('field_channel_id')->value;
     $n_videos = 10;
-    // &videoDuration=long
-    $url = 'https://www.googleapis.com/youtube/v3/search?key='.$api_key.'&channelId='.$channel_id.'&part=snippet,id&order=date&maxResults='.$n_videos.'&type=video';
+    $url = 'https://www.googleapis.com/youtube/v3/search?key='.$api_key.'&channelId='.$channel_id.'&part=snippet,id&order=date&maxResults='.$n_videos.'&videoDuration=long&type=video';
     logg($url, '$url');
 
     $json = file_get_contents($url);
