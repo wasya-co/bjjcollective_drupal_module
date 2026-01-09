@@ -5,4 +5,6 @@
 0.2.1 - 2023-11-20 - reset well.
 
 0.3.0 :: 2023-11-21 :: POST /contributed_posts with jwt but it really, really doesn't work
+0.5.1 :: 2026-01-09 :: an exact copy of ish_drupal_module
+                       _TODO: make this an actual bjjcollective_drupal_module, rename everything
 
